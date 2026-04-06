@@ -1,0 +1,22 @@
+{
+  "name": "keypa_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/A1exauri0/keypa_backend.git"
+  },
+  "author": "Adrian Vazquez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/A1exauri0/keypa_backend/issues"
+  },
+  "homepage": "https://github.com/A1exauri0/keypa_backend#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
