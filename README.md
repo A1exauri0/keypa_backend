@@ -90,3 +90,65 @@ npm run db:seed
 - `POST /auth/login`
 - `GET /auth/me`
 - `POST /auth/logout`
+
+## Docker (stack en carpeta padre)
+
+La orquestacion ahora vive en `keypa_outlet/docker-compose.yml`.
+
+1. Ir a carpeta padre:
+
+```bash
+cd c:\laragon\www\keypa_outlet
+```
+
+2. Levantar servicios:
+
+```bash
+docker compose up --build
+```
+
+3. Ejecutar migraciones y seeders:
+
+```bash
+npm run migrate
+npm run seed
+```
+
+Tambien puedes ejecutar ambos en un solo paso:
+
+```bash
+npm run migrate-seed
+```
+
+4. Reinicio total de BD + seed (equivalente a fresh + seed):
+
+```bash
+docker compose exec backend npx prisma migrate reset --force
+```
+
+5. Detener servicios:
+
+```bash
+docker compose down
+```
+
+## Conexion a MySQL en Docker
+
+Cuando usas Docker, la conexion cambia segun desde donde te conectas:
+
+- Desde el contenedor `backend`:
+  - Host: `mysql`
+  - Port: `3306`
+  - DB: `keypa_outlet`
+  - User: `keypa`
+  - Password: `keypa123`
+  - URL: `mysql://keypa:keypa123@mysql:3306/keypa_outlet`
+
+- Desde tu maquina (Workbench, DBeaver, etc.):
+  - Host: `localhost`
+  - Port: `3307`
+  - DB: `keypa_outlet`
+  - User: `keypa`
+  - Password: `keypa123`
+
+Si usas `localhost:3306` vas a conectarte a otra instancia (normalmente la local de Laragon), no a la de Docker.
