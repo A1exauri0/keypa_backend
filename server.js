@@ -4,7 +4,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const prisma = require('./config/prisma');
-const routes = require('./routes/routes');
+const routes = require('./routes');
 
 dotenv.config();
 

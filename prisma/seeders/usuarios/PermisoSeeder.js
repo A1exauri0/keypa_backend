@@ -2,24 +2,80 @@ const prisma = require('../../../config/prisma');
 
 const permisosBase = [
   {
-    nombre: 'usuarios.ver',
-    descripcion: 'Puede consultar usuarios',
+    nombre: 'panel.ver',
+    descripcion: 'Puede acceder al panel principal',
   },
   {
-    nombre: 'usuarios.gestionar',
-    descripcion: 'Puede crear, editar y desactivar usuarios',
+    nombre: 'usuarios.index',
+    descripcion: 'Puede listar usuarios',
   },
   {
-    nombre: 'productos.ver',
-    descripcion: 'Puede consultar productos',
+    nombre: 'usuarios.show',
+    descripcion: 'Puede ver detalle de usuario',
   },
   {
-    nombre: 'productos.gestionar',
-    descripcion: 'Puede crear, editar y actualizar stock',
+    nombre: 'usuarios.store',
+    descripcion: 'Puede crear usuarios',
   },
   {
-    nombre: 'ventas.gestionar',
-    descripcion: 'Puede registrar y administrar ventas',
+    nombre: 'usuarios.update',
+    descripcion: 'Puede actualizar usuarios',
+  },
+  {
+    nombre: 'usuarios.destroy',
+    descripcion: 'Puede eliminar usuarios',
+  },
+  {
+    nombre: 'usuarios.asignar_roles',
+    descripcion: 'Puede asignar roles a usuarios',
+  },
+  {
+    nombre: 'usuarios.asignar_permisos',
+    descripcion: 'Puede asignar permisos directos a usuarios',
+  },
+  {
+    nombre: 'roles.index',
+    descripcion: 'Puede listar roles',
+  },
+  {
+    nombre: 'roles.show',
+    descripcion: 'Puede ver detalle de rol',
+  },
+  {
+    nombre: 'roles.store',
+    descripcion: 'Puede crear roles',
+  },
+  {
+    nombre: 'roles.update',
+    descripcion: 'Puede actualizar roles',
+  },
+  {
+    nombre: 'roles.destroy',
+    descripcion: 'Puede eliminar roles',
+  },
+  {
+    nombre: 'roles.asignar_permisos',
+    descripcion: 'Puede asignar permisos a roles',
+  },
+  {
+    nombre: 'permisos.index',
+    descripcion: 'Puede listar permisos',
+  },
+  {
+    nombre: 'permisos.show',
+    descripcion: 'Puede ver detalle de permiso',
+  },
+  {
+    nombre: 'permisos.store',
+    descripcion: 'Puede crear permisos',
+  },
+  {
+    nombre: 'permisos.update',
+    descripcion: 'Puede actualizar permisos',
+  },
+  {
+    nombre: 'permisos.destroy',
+    descripcion: 'Puede eliminar permisos',
   },
 ];
 

@@ -162,6 +162,65 @@ async function listarUsuarios() {
   });
 }
 
+async function obtenerUsuarioPorId(idUsuario) {
+  return buscarPorId(idUsuario);
+}
+
+async function actualizarUsuario({ idUsuario, nombre, email, activo }) {
+  const usuarioExistente = await prisma.user.findUnique({
+    where: { idUsuario },
+    select: { idUsuario: true },
+  });
+
+  if (!usuarioExistente) {
+    return null;
+  }
+
+  return prisma.user.update({
+    where: { idUsuario },
+    data: {
+      ...(nombre !== undefined ? { nombre } : {}),
+      ...(email !== undefined ? { email } : {}),
+      ...(activo !== undefined ? { activo } : {}),
+    },
+    include: {
+      roles: {
+        include: {
+          rol: {
+            include: {
+              permisos: {
+                include: { permiso: true },
+              },
+            },
+          },
+        },
+      },
+      permisosDirectos: {
+        include: {
+          permiso: true,
+        },
+      },
+    },
+  });
+}
+
+async function eliminarUsuario(idUsuario) {
+  const usuarioExistente = await prisma.user.findUnique({
+    where: { idUsuario },
+    select: { idUsuario: true },
+  });
+
+  if (!usuarioExistente) {
+    return null;
+  }
+
+  await prisma.user.delete({
+    where: { idUsuario },
+  });
+
+  return true;
+}
+
 async function asignarRolesAUsuario({ userId, roles }) {
   const rolesDb = await buscarRolesPorNombre(roles);
 
@@ -179,6 +238,23 @@ async function asignarRolesAUsuario({ userId, roles }) {
   return buscarPorId(userId);
 }
 
+async function asignarPermisosAUsuario({ idUsuario, permisos }) {
+  const permisosDb = await buscarPermisosPorNombre(permisos);
+
+  if (permisosDb.length === 0) {
+    throw new Error('No se encontraron permisos validos para asignar');
+  }
+
+  await prisma.usuarioPermiso.deleteMany({ where: { idUsuario } });
+
+  await prisma.usuarioPermiso.createMany({
+    data: permisosDb.map((permiso) => ({ idUsuario, idPermiso: permiso.idPermiso })),
+    skipDuplicates: true,
+  });
+
+  return buscarPorId(idUsuario);
+}
+
 async function existeUsuarioConEmail(email) {
   const usuario = await prisma.user.findUnique({
     where: { email },
@@ -194,7 +270,11 @@ module.exports = {
   contarUsuarios,
   crearUsuario,
   listarUsuarios,
+  obtenerUsuarioPorId,
+  actualizarUsuario,
+  eliminarUsuario,
   asignarRolesAUsuario,
+  asignarPermisosAUsuario,
   existeUsuarioConEmail,
   mapearUsuarioAuth,
 };

@@ -51,9 +51,45 @@ async function requireAuth(req, res, next) {
 }
 
 function requirePermiso(nombrePermiso) {
+  const permisosRequeridos = Array.isArray(nombrePermiso) ? nombrePermiso : [nombrePermiso];
+
   return (req, res, next) => {
-    if (!req.user || !req.user.permisos.includes(nombrePermiso)) {
-      return res.status(403).json({ message: 'No tienes permiso para esta accion' });
+    if (!req.user) {
+      return res.status(403).json({
+        message: 'No tienes permiso para esta accion',
+        codigo: 'USUARIO_NO_AUTENTICADO',
+      });
+    }
+
+    const autorizado = permisosRequeridos.some((permiso) => req.user.permisos.includes(permiso));
+    if (!autorizado) {
+      return res.status(403).json({
+        message: 'No tienes permiso para esta accion',
+        codigo: 'PERMISO_INSUFICIENTE',
+      });
+    }
+
+    return next();
+  };
+}
+
+function requireRol(nombreRol) {
+  const rolesRequeridos = Array.isArray(nombreRol) ? nombreRol : [nombreRol];
+
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(403).json({
+        message: 'No tienes rol para esta accion',
+        codigo: 'USUARIO_NO_AUTENTICADO',
+      });
+    }
+
+    const autorizado = rolesRequeridos.some((rol) => req.user.roles.includes(rol));
+    if (!autorizado) {
+      return res.status(403).json({
+        message: 'No tienes rol para esta accion',
+        codigo: 'ROL_INSUFICIENTE',
+      });
     }
 
     return next();
@@ -63,4 +99,5 @@ function requirePermiso(nombrePermiso) {
 module.exports = {
   requireAuth,
   requirePermiso,
+  requireRol,
 };

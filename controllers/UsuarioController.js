@@ -4,8 +4,12 @@ const {
   buscarPorEmail,
   contarUsuarios,
   listarUsuarios,
+  obtenerUsuarioPorId,
+  actualizarUsuario,
+  eliminarUsuario,
   crearUsuario,
   asignarRolesAUsuario,
+  asignarPermisosAUsuario,
   existeUsuarioConEmail,
   mapearUsuarioAuth,
 } = require('../models/User');
@@ -117,7 +121,7 @@ async function registerInicial(req, res) {
     nombre,
     email,
     password,
-    roles: ['super_admin'],
+    roles: ['admin'],
   });
 
   const authUser = mapearUsuarioAuth(user);
@@ -142,6 +146,19 @@ async function index(_req, res) {
   const usuarios = await listarUsuarios();
   return res.json({
     data: usuarios.map((usuario) => mapearUsuarioAuth(usuario)),
+  });
+}
+
+async function show(req, res) {
+  const idUsuario = Number(req.params.id);
+  const usuario = await obtenerUsuarioPorId(idUsuario);
+
+  if (!usuario) {
+    return res.status(404).json({ message: 'Usuario no encontrado' });
+  }
+
+  return res.json({
+    data: mapearUsuarioAuth(usuario),
   });
 }
 
@@ -188,12 +205,74 @@ async function asignarRoles(req, res) {
   });
 }
 
+async function asignarPermisos(req, res) {
+  const idUsuario = Number(req.params.id);
+  if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+    return res.status(422).json({ message: 'ID de usuario invalido' });
+  }
+
+  const usuario = await asignarPermisosAUsuario({
+    idUsuario,
+    permisos: req.body.permisos,
+  });
+
+  if (!usuario) {
+    return res.status(404).json({ message: 'Usuario no encontrado' });
+  }
+
+  return res.json({
+    message: 'Permisos directos actualizados correctamente',
+    data: mapearUsuarioAuth(usuario),
+  });
+}
+
+async function update(req, res) {
+  const idUsuario = Number(req.params.id);
+  if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+    return res.status(422).json({ message: 'ID de usuario invalido' });
+  }
+
+  const usuario = await actualizarUsuario({
+    idUsuario,
+    nombre: req.body.nombre,
+    email: req.body.email,
+    activo: req.body.activo,
+  });
+
+  if (!usuario) {
+    return res.status(404).json({ message: 'Usuario no encontrado' });
+  }
+
+  return res.json({
+    message: 'Usuario actualizado correctamente',
+    data: mapearUsuarioAuth(usuario),
+  });
+}
+
+async function destroy(req, res) {
+  const idUsuario = Number(req.params.id);
+  if (!Number.isInteger(idUsuario) || idUsuario <= 0) {
+    return res.status(422).json({ message: 'ID de usuario invalido' });
+  }
+
+  const eliminado = await eliminarUsuario(idUsuario);
+  if (!eliminado) {
+    return res.status(404).json({ message: 'Usuario no encontrado' });
+  }
+
+  return res.json({ message: 'Usuario eliminado correctamente' });
+}
+
 module.exports = {
   login,
   registerInicial,
   me,
   logout,
   index,
+  show,
   store,
+  update,
+  destroy,
   asignarRoles,
+  asignarPermisos,
 };

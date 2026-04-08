@@ -2,15 +2,28 @@ const prisma = require('../../../config/prisma');
 
 const permisosPorRol = {
   admin: [
-    'usuarios.ver',
-    'usuarios.gestionar',
-    'productos.ver',
-    'productos.gestionar',
-    'ventas.gestionar',
+    'panel.ver',
+    'usuarios.index',
+    'usuarios.show',
+    'usuarios.store',
+    'usuarios.update',
+    'usuarios.destroy',
+    'usuarios.asignar_roles',
+    'usuarios.asignar_permisos',
+    'roles.index',
+    'roles.show',
+    'roles.store',
+    'roles.update',
+    'roles.destroy',
+    'roles.asignar_permisos',
+    'permisos.index',
+    'permisos.show',
+    'permisos.store',
+    'permisos.update',
+    'permisos.destroy',
   ],
   vendedor: [
-    'productos.ver',
-    'ventas.gestionar',
+    'panel.ver',
   ],
 };
 
