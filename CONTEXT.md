@@ -1,81 +1,108 @@
 # CONTEXT - Keypa Backend
 
-## Proposito
+## Vista rapida
 
-Servicio API REST para autenticacion, gestion de usuarios y base para catalogo/ventas.
+API REST para autenticacion, usuarios, roles y permisos.
 
 ## Stack
 
 - Node.js + Express
 - Prisma ORM
 - MySQL
-- JWT para autenticacion
+- JWT
 
-## Arquitectura principal
+## Mapa visual del proyecto
 
-- Organizacion general del sistema (carpeta padre):
-  - keypa_outlet/
-  - keypa_outlet/keypa_backend/
-  - keypa_outlet/keypa_frontend/
-- Rutas: routes/routes.js
-- Controladores: controllers/
-- Capa de datos: models/
-- Prisma schema: prisma/schema.prisma
-- Seeders: prisma/seeders/
+```text
+keypa_outlet/
+└── keypa_backend/
+    ├── controllers/
+    │   ├── UsuarioController.js
+    │   ├── RolController.js
+    │   └── PermisoController.js
+    ├── models/
+    │   ├── User.js
+    │   ├── Rol.js
+    │   └── Permiso.js
+    ├── routes/
+    │   ├── index.js
+    │   ├── auth.router.js
+    │   ├── usuarios.router.js
+    │   ├── roles.router.js
+    │   └── permisos.router.js
+    ├── validators/
+    │   ├── authValidator.js
+    │   ├── usuarioValidator.js
+    │   ├── rolValidator.js
+    │   └── permisoValidator.js
+    ├── middlewares/
+    ├── prisma/
+    │   ├── schema.prisma
+    │   └── seeders/
+    │       ├── usuarios/
+    │       └── productos/
+    └── server.js
+```
 
-## Base de datos y convenciones
+## Convenciones de rutas
 
-- Todas las tablas fisicas se manejan en minusculas.
-- Tablas muchos a muchos usan nombre con verbo y guion bajo.
-- Los IDs siguen convencion semantica por entidad:
-  - idUsuario
-  - idProducto
-  - idRol
-  - idPermiso
-- Ejemplos:
+- Los archivos de rutas usan formato: nombre.router.js
+- El archivo routes/index.js solo compone routers.
+- Cada archivo de ruta se organiza por metodo:
+  - GET
+  - POST
+  - PUT
+  - DELETE
+
+## Base de datos y naming
+
+- Tablas padre en plural y minusculas:
   - usuarios
   - productos
   - roles
   - permisos
+- Tablas pivote con verbo y guion bajo:
   - usuario_tiene_rol
   - usuario_tiene_permiso
   - rol_tiene_permiso
+- IDs por entidad:
+  - idUsuario
+  - idProducto
+  - idRol
+  - idPermiso
 
-## Politica de permisos
+## Politica de autorizacion
 
-- Los permisos por defecto del usuario se heredan desde sus roles (roles + rol_tiene_permiso).
-- Los permisos extra por usuario se guardan en usuario_tiene_permiso.
-- Permisos efectivos del usuario = union de permisos por rol + permisos directos.
+- Se protege por token, rol y permiso por endpoint.
+- Permisos efectivos del usuario:
+  - permisos heredados por rol
+  - mas permisos directos en usuario_tiene_permiso
 
-## Seeders actuales
+## Seeders por dominio
 
-- Organizados por dominio:
-  - prisma/seeders/usuarios/
-    - RolSeeder
-    - PermisoSeeder
-    - RolPermisoSeeder
-    - UserSeeder
-  - prisma/seeders/productos/
-    - ProductoSeeder
+- prisma/seeders/usuarios/
+  - RolSeeder
+  - PermisoSeeder
+  - RolPermisoSeeder
+  - UserSeeder
+- prisma/seeders/productos/
+  - ProductoSeeder
 
-Flujo de seed:
+Flujo:
 1. Se crean roles.
 2. Se crean permisos.
-3. Se vinculan roles con permisos.
-4. Se crean usuarios y se vinculan directamente a su rol.
+3. Se vinculan roles y permisos.
+4. Se crean usuarios base.
 
-## Docker y comandos cortos
+## Operacion local con Docker
 
-Ubicacion del stack: carpeta padre keypa_outlet.
-
-Comandos utiles desde keypa_outlet:
+Desde keypa_outlet:
 - npm run upd
 - npm run migrate
 - npm run seed
 - npm run migrate-seed
 - npm run fresh
 
-## Convencion de idioma del proyecto
+## Idioma del codigo
 
-- Componentes, nombres funcionales y comentarios deben escribirse en espanol.
-- Mantener mensajes de log y documentacion tecnica en espanol.
+- Comentarios, mensajes funcionales y documentacion en espanol.
