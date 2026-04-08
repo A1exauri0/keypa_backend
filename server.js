@@ -40,12 +40,38 @@ app.use((error, _req, res, _next) => {
 	res.status(500).json({ message: 'Error interno del servidor' });
 });
 
+function esperar(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function conectarBaseConReintentos() {
+	const maxIntentos = Number(process.env.DB_CONNECT_RETRIES || 15);
+	const esperaMs = Number(process.env.DB_CONNECT_RETRY_DELAY_MS || 2000);
+
+	for (let intento = 1; intento <= maxIntentos; intento += 1) {
+		try {
+			await prisma.$connect();
+			console.log('Conexion a base de datos establecida');
+			return;
+		} catch (error) {
+			if (intento === maxIntentos) {
+				throw error;
+			}
+
+			console.warn(
+				`Intento ${intento}/${maxIntentos} de conexion a BD fallido. Reintentando en ${esperaMs}ms...`,
+			);
+			await esperar(esperaMs);
+		}
+	}
+}
+
 async function start() {
 	if (!process.env.JWT_SECRET) {
 		throw new Error('Falta JWT_SECRET en el archivo .env');
 	}
 
-	await prisma.$connect();
+	await conectarBaseConReintentos();
 
 	app.listen(port, () => {
 		console.log(`API running on http://localhost:${port}`);
