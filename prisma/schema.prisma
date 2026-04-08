@@ -8,63 +8,87 @@ datasource db {
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
+  idUsuario    Int          @id @default(autoincrement())
   nombre       String       @db.VarChar(120)
   email        String       @unique @db.VarChar(180)
   passwordHash String       @db.VarChar(255)
   activo       Boolean      @default(true)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   roles        UsuarioRol[]
+  permisosDirectos UsuarioPermiso[]
+
+  @@map("usuarios")
 }
 
 model Producto {
-  id          Int      @id @default(autoincrement())
+  idProducto  Int      @id @default(autoincrement())
   nombre      String   @db.VarChar(180)
   descripcion String?  @db.Text
   precio      Decimal  @db.Decimal(10, 2)
   stock       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("productos")
 }
 
 model Rol {
-  id          Int          @id @default(autoincrement())
+  idRol       Int          @id @default(autoincrement())
   nombre      String       @unique @db.VarChar(100)
   descripcion String?      @db.VarChar(255)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   usuarios    UsuarioRol[]
   permisos    RolPermiso[]
+
+  @@map("roles")
 }
 
 model Permiso {
-  id          Int          @id @default(autoincrement())
+  idPermiso   Int          @id @default(autoincrement())
   nombre      String       @unique @db.VarChar(120)
   descripcion String?      @db.VarChar(255)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   roles       RolPermiso[]
+  usuarios    UsuarioPermiso[]
+
+  @@map("permisos")
 }
 
 model UsuarioRol {
-  userId     Int
-  rolId      Int
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rol        Rol      @relation(fields: [rolId], references: [id], onDelete: Cascade)
+  idUsuario  Int
+  idRol      Int
+  createdAt   DateTime @default(now())
+  user       User     @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
+  rol        Rol      @relation(fields: [idRol], references: [idRol], onDelete: Cascade)
 
-  @@id([userId, rolId])
-  @@index([rolId])
+  @@id([idUsuario, idRol])
+  @@index([idRol])
+  @@map("usuario_tiene_rol")
 }
 
 model RolPermiso {
-  rolId      Int
-  permisoId  Int
-  createdAt  DateTime @default(now())
-  rol        Rol      @relation(fields: [rolId], references: [id], onDelete: Cascade)
-  permiso    Permiso  @relation(fields: [permisoId], references: [id], onDelete: Cascade)
+  idRol      Int
+  idPermiso  Int
+  createdAt   DateTime @default(now())
+  rol        Rol      @relation(fields: [idRol], references: [idRol], onDelete: Cascade)
+  permiso    Permiso  @relation(fields: [idPermiso], references: [idPermiso], onDelete: Cascade)
 
-  @@id([rolId, permisoId])
-  @@index([permisoId])
+  @@id([idRol, idPermiso])
+  @@index([idPermiso])
+  @@map("rol_tiene_permiso")
+}
+
+model UsuarioPermiso {
+  idUsuario  Int
+  idPermiso  Int
+  createdAt   DateTime @default(now())
+  user       User     @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade)
+  permiso    Permiso  @relation(fields: [idPermiso], references: [idPermiso], onDelete: Cascade)
+
+  @@id([idUsuario, idPermiso])
+  @@index([idPermiso])
+  @@map("usuario_tiene_permiso")
 }
