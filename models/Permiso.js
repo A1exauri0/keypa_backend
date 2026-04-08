@@ -6,6 +6,19 @@ async function listarPermisos() {
   });
 }
 
+async function buscarPermisosPorNombre(nombres) {
+  if (!Array.isArray(nombres) || nombres.length === 0) {
+    return [];
+  }
+
+  return prisma.permiso.findMany({
+    where: {
+      nombre: { in: nombres },
+    },
+  });
+}
+
 module.exports = {
   listarPermisos,
+  buscarPermisosPorNombre,
 };

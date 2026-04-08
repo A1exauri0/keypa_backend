@@ -6,6 +6,9 @@ function validarRequest(req, res, next) {
   if (!errores.isEmpty()) {
     return res.status(422).json({
       message: 'Datos invalidos',
+      codigo: 'VALIDACION_ERROR',
+      endpoint: req.originalUrl,
+      metodo: req.method,
       errores: errores.array(),
     });
   }

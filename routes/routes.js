@@ -14,7 +14,10 @@ router.get('/health', (_req, res) => {
 
 router.post(
   '/auth/login',
-  [body('email').isEmail().withMessage('Correo invalido'), body('password').isLength({ min: 6 })],
+  [
+    body('email').isEmail().withMessage('Correo invalido'),
+    body('password').isLength({ min: 6 }).withMessage('La contrasena debe tener al menos 6 caracteres'),
+  ],
   validarRequest,
   UsuarioController.login,
 );
@@ -51,6 +54,7 @@ router.post(
     body('email').isEmail(),
     body('password').isLength({ min: 8 }),
     body('roles').isArray({ min: 1 }),
+    body('permisosAdicionales').optional().isArray(),
   ],
   validarRequest,
   UsuarioController.store,

@@ -10,6 +10,10 @@ const {
   mapearUsuarioAuth,
 } = require('../models/User');
 
+function esDepuracionAuth() {
+  return process.env.DEBUG_AUTH_RESPONSES === 'true' || process.env.NODE_ENV === 'development';
+}
+
 function crearToken(user) {
   return jwt.sign(
     {
@@ -25,25 +29,73 @@ function crearToken(user) {
 
 async function login(req, res) {
   const { email, password } = req.body;
-  const user = await buscarPorEmail(email);
+  try {
+    const user = await buscarPorEmail(email);
 
-  if (!user || !user.activo) {
-    return res.status(401).json({ message: 'Credenciales invalidas' });
+    if (!user) {
+      return res.status(401).json({
+        message: 'Credenciales invalidas',
+        codigo: 'USUARIO_NO_ENCONTRADO',
+        diagnostico: esDepuracionAuth()
+          ? {
+              email,
+              existeUsuario: false,
+            }
+          : undefined,
+      });
+    }
+
+    if (!user.activo) {
+      return res.status(401).json({
+        message: 'Usuario inactivo',
+        codigo: 'USUARIO_INACTIVO',
+        diagnostico: esDepuracionAuth()
+          ? {
+              email,
+              existeUsuario: true,
+              activo: user.activo,
+            }
+          : undefined,
+      });
+    }
+
+    const passwordCorrecta = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordCorrecta) {
+      return res.status(401).json({
+        message: 'Credenciales invalidas',
+        codigo: 'PASSWORD_INVALIDA',
+        diagnostico: esDepuracionAuth()
+          ? {
+              email,
+              existeUsuario: true,
+              activo: user.activo,
+            }
+          : undefined,
+      });
+    }
+
+    const authUser = mapearUsuarioAuth(user);
+    const token = crearToken(authUser);
+
+    return res.json({
+      message: 'Inicio de sesion exitoso',
+      token,
+      user: authUser,
+    });
+  } catch (error) {
+    console.error('Error en login:', error);
+
+    return res.status(500).json({
+      message: 'Error al intentar iniciar sesion',
+      codigo: 'LOGIN_ERROR',
+      diagnostico: esDepuracionAuth()
+        ? {
+            email,
+            detalle: error.message,
+          }
+        : undefined,
+    });
   }
-
-  const passwordCorrecta = await bcrypt.compare(password, user.passwordHash);
-  if (!passwordCorrecta) {
-    return res.status(401).json({ message: 'Credenciales invalidas' });
-  }
-
-  const authUser = mapearUsuarioAuth(user);
-  const token = crearToken(authUser);
-
-  return res.json({
-    message: 'Inicio de sesion exitoso',
-    token,
-    user: authUser,
-  });
 }
 
 async function registerInicial(req, res) {
@@ -94,14 +146,20 @@ async function index(_req, res) {
 }
 
 async function store(req, res) {
-  const { nombre, email, password, roles } = req.body;
+  const { nombre, email, password, roles, permisosAdicionales = [] } = req.body;
   const existeEmail = await existeUsuarioConEmail(email);
 
   if (existeEmail) {
     return res.status(409).json({ message: 'El correo ya esta registrado' });
   }
 
-  const usuario = await crearUsuario({ nombre, email, password, roles });
+  const usuario = await crearUsuario({
+    nombre,
+    email,
+    password,
+    roles,
+    permisosAdicionales,
+  });
 
   return res.status(201).json({
     message: 'Usuario creado correctamente',
