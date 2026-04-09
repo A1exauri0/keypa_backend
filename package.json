@@ -7,7 +7,8 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
+    "db:fix-producto-duplicates": "node prisma/scripts/fixProductoDuplicados.js",
+    "prisma:migrate": "npm run db:fix-producto-duplicates && prisma migrate dev",
     "db:seed": "node prisma/seed.js",
     "db:reset": "prisma migrate reset --force",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,7 +24,7 @@
   },
   "homepage": "https://github.com/A1exauri0/keypa_backend#readme",
   "dependencies": {
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "6.17.1",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -33,11 +34,12 @@
     "express-validator": "^7.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
+    "keypa_outlet_stack": "file:..",
     "mysql2": "^3.20.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
-    "prisma": "^6.17.1"
+    "prisma": "6.17.1"
   }
 }
