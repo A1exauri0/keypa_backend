@@ -1,7 +1,7 @@
 const express = require("express");
 const RolController = require("../controllers/RolController");
-const { requireAuth, requirePermiso, requireRol } = require("../middlewares/auth");
-const validarRequest = require("../middlewares/validarRequest");
+const { requireAuth, requirePermiso, requireRol } = require("../../../shared/middlewares/auth");
+const validarRequest = require("../../../shared/middlewares/validarRequest");
 const {
   validarIdRol,
   validarCrearRol,

@@ -3,8 +3,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
-const prisma = require('./config/prisma');
-const routes = require('./routes');
+const prisma = require('./src/shared/db/prisma');
+const routes = require('./src/routes');
 
 dotenv.config();
 

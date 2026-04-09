@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const prisma = require('../config/prisma');
+const prisma = require('../../../shared/db/prisma');
 const { buscarRolesPorNombre } = require('./Rol');
 const { buscarPermisosPorNombre } = require('./Permiso');
 

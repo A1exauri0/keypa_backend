@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const prisma = require('../../../config/prisma');
+const prisma = require('../../../src/shared/db/prisma');
 
 const usuariosBase = [
   {

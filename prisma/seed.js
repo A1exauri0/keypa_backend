@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const prisma = require('../config/prisma');
+const prisma = require('../src/shared/db/prisma');
 const { ejecutarRolSeeder } = require('./seeders/usuarios/RolSeeder');
 const { ejecutarPermisoSeeder } = require('./seeders/usuarios/PermisoSeeder');
 const { ejecutarRolPermisoSeeder } = require('./seeders/usuarios/RolPermisoSeeder');

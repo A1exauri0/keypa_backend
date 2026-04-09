@@ -1,4 +1,4 @@
-const prisma = require('../config/prisma');
+const prisma = require('../../../shared/db/prisma');
 
 async function listarProductos() {
   return prisma.producto.findMany({

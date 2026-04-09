@@ -1,8 +1,8 @@
 const express = require("express");
-const authRoutes = require("./auth.router");
-const usuariosRoutes = require("./usuarios.router");
-const rolesRoutes = require("./roles.router");
-const permisosRoutes = require("./permisos.router");
+const authRoutes = require("../modules/auth/router/auth.routes");
+const usuariosRoutes = require("../modules/usuarios/router/usuarios.routes");
+const rolesRoutes = require("../modules/usuarios/router/roles.routes");
+const permisosRoutes = require("../modules/usuarios/router/permisos.routes");
 
 const router = express.Router();
 

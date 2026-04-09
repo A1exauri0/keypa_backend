@@ -1,4 +1,4 @@
-const prisma = require('../config/prisma');
+const prisma = require('../../../shared/db/prisma');
 const { buscarPermisosPorNombre } = require('./Permiso');
 
 async function listarRoles() {
