@@ -3,6 +3,9 @@ const authRoutes = require("../modules/auth/router/auth.routes");
 const usuariosRoutes = require("../modules/usuarios/router/usuarios.routes");
 const rolesRoutes = require("../modules/usuarios/router/roles.routes");
 const permisosRoutes = require("../modules/usuarios/router/permisos.routes");
+const marcasRoutes = require("../modules/productos/router/marcas.routes");
+const categoriasRoutes = require("../modules/productos/router/categorias.routes");
+const productosRoutes = require("../modules/productos/router/productos.routes");
 
 const router = express.Router();
 
@@ -22,5 +25,8 @@ router.use(authRoutes);
 router.use(usuariosRoutes);
 router.use(rolesRoutes);
 router.use(permisosRoutes);
+router.use(marcasRoutes);
+router.use(categoriasRoutes);
+router.use(productosRoutes);
 
 module.exports = router;

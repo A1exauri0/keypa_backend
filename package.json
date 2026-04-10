@@ -7,8 +7,7 @@
     "dev": "nodemon server.js",
     "start": "node server.js",
     "prisma:generate": "prisma generate",
-    "db:fix-producto-duplicates": "node prisma/scripts/fixProductoDuplicados.js",
-    "prisma:migrate": "npm run db:fix-producto-duplicates && prisma migrate dev",
+    "prisma:migrate": "prisma migrate dev",
     "db:seed": "node prisma/seed.js",
     "db:reset": "prisma migrate reset --force",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -35,6 +34,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "keypa_outlet_stack": "file:..",
+    "multer": "^2.1.1",
     "mysql2": "^3.20.0",
     "zod": "^4.3.6"
   },

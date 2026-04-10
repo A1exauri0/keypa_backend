@@ -3,6 +3,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 const prisma = require('./src/shared/db/prisma');
 const routes = require('./src/routes');
 
@@ -17,13 +19,30 @@ const allowedOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173')
 	.filter(Boolean);
 
 app.set('trust proxy', 1);
-app.use(helmet());
+app.use(
+	helmet({
+		crossOriginResourcePolicy: { policy: 'cross-origin' },
+	}),
+);
 app.use(
 	cors({
 		origin: allowedOrigins,
 	}),
 );
 app.use(express.json({ limit: '1mb' }));
+
+const storagePublicPath = path.join(__dirname, 'storage', 'app', 'public');
+fs.mkdirSync(storagePublicPath, { recursive: true });
+
+const staticOptions = {
+	setHeaders: (res) => {
+		res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+		res.setHeader('Access-Control-Allow-Origin', '*');
+	},
+};
+
+app.use('/storage', express.static(storagePublicPath, staticOptions));
+
 app.use(
 	rateLimit({
 		windowMs: 15 * 60 * 1000,
@@ -37,7 +56,10 @@ app.use(routes);
 
 app.use((error, _req, res, _next) => {
 	console.error(error);
-	res.status(500).json({ message: 'Error interno del servidor' });
+	const status = Number(error.status || error.statusCode || 500);
+	const message = error.message || 'Error interno del servidor';
+
+	res.status(status).json({ message });
 });
 
 function esperar(ms) {
