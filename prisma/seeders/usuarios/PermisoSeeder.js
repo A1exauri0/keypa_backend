@@ -137,6 +137,46 @@ const permisosBase = [
     nombre: 'productos.destroy',
     descripcion: 'Puede eliminar productos',
   },
+  {
+    nombre: 'ciudades.index',
+    descripcion: 'Puede listar ciudades',
+  },
+  {
+    nombre: 'ciudades.show',
+    descripcion: 'Puede ver detalle de ciudad',
+  },
+  {
+    nombre: 'ciudades.store',
+    descripcion: 'Puede crear ciudades',
+  },
+  {
+    nombre: 'ciudades.update',
+    descripcion: 'Puede actualizar ciudades',
+  },
+  {
+    nombre: 'ciudades.destroy',
+    descripcion: 'Puede eliminar ciudades',
+  },
+  {
+    nombre: 'colonias.index',
+    descripcion: 'Puede listar colonias',
+  },
+  {
+    nombre: 'colonias.show',
+    descripcion: 'Puede ver detalle de colonia',
+  },
+  {
+    nombre: 'colonias.store',
+    descripcion: 'Puede crear colonias',
+  },
+  {
+    nombre: 'colonias.update',
+    descripcion: 'Puede actualizar colonias',
+  },
+  {
+    nombre: 'colonias.destroy',
+    descripcion: 'Puede eliminar colonias',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {

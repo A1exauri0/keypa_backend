@@ -76,6 +76,33 @@ model Categoria {
   @@map("categorias")
 }
 
+model Ciudad {
+  idCiudad    Int       @id @default(autoincrement())
+  nombre      String    @unique @db.VarChar(140)
+  estado      String    @default("Chiapas") @db.VarChar(80)
+  activo      Boolean   @default(true)
+  colonias    Colonia[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("ciudades")
+}
+
+model Colonia {
+  idColonia     Int      @id @default(autoincrement())
+  nombre        String   @db.VarChar(160)
+  codigoPostal  String   @db.VarChar(10)
+  idCiudad      Int
+  ciudad        Ciudad   @relation(fields: [idCiudad], references: [idCiudad], onDelete: Cascade)
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([idCiudad])
+  @@unique([idCiudad, nombre, codigoPostal])
+  @@map("colonias")
+}
+
 model ProductoCategoria {
   idProducto   Int
   idCategoria  Int

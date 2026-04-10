@@ -6,6 +6,8 @@ const permisosRoutes = require("../modules/usuarios/router/permisos.routes");
 const marcasRoutes = require("../modules/productos/router/marcas.routes");
 const categoriasRoutes = require("../modules/productos/router/categorias.routes");
 const productosRoutes = require("../modules/productos/router/productos.routes");
+const ciudadesRoutes = require('../modules/ubicaciones/router/ciudades.routes');
+const coloniasRoutes = require('../modules/ubicaciones/router/colonias.routes');
 
 const router = express.Router();
 
@@ -28,5 +30,7 @@ router.use(permisosRoutes);
 router.use(marcasRoutes);
 router.use(categoriasRoutes);
 router.use(productosRoutes);
+router.use(ciudadesRoutes);
+router.use(coloniasRoutes);
 
 module.exports = router;

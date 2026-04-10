@@ -7,6 +7,8 @@ const { ejecutarUserSeeder } = require('./seeders/usuarios/UserSeeder');
 const { ejecutarMarcaSeeder } = require('./seeders/productos/MarcaSeeder');
 const { ejecutarCategoriaSeeder } = require('./seeders/productos/CategoriaSeeder');
 const { ejecutarProductoSeeder } = require('./seeders/productos/ProductoSeeder');
+const { ejecutarCiudadSeeder } = require('./seeders/ubicaciones/CiudadSeeder');
+const { ejecutarColoniaSeeder } = require('./seeders/ubicaciones/ColoniaSeeder');
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ async function ejecutarSeeders() {
   await ejecutarMarcaSeeder();
   await ejecutarCategoriaSeeder();
   await ejecutarProductoSeeder();
+  await ejecutarCiudadSeeder();
+  await ejecutarColoniaSeeder();
 
   await prisma.$disconnect();
 }
