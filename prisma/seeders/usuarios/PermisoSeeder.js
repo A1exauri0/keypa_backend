@@ -197,6 +197,46 @@ const permisosBase = [
     nombre: 'clientes.destroy',
     descripcion: 'Puede eliminar clientes',
   },
+  {
+    nombre: 'sucursales.index',
+    descripcion: 'Puede listar sucursales',
+  },
+  {
+    nombre: 'sucursales.show',
+    descripcion: 'Puede ver detalle de sucursal',
+  },
+  {
+    nombre: 'sucursales.store',
+    descripcion: 'Puede crear sucursales',
+  },
+  {
+    nombre: 'sucursales.update',
+    descripcion: 'Puede actualizar sucursales',
+  },
+  {
+    nombre: 'sucursales.destroy',
+    descripcion: 'Puede eliminar sucursales',
+  },
+  {
+    nombre: 'almacenes.index',
+    descripcion: 'Puede listar almacenes',
+  },
+  {
+    nombre: 'almacenes.show',
+    descripcion: 'Puede ver detalle de almacen',
+  },
+  {
+    nombre: 'almacenes.store',
+    descripcion: 'Puede crear almacenes',
+  },
+  {
+    nombre: 'almacenes.update',
+    descripcion: 'Puede actualizar almacenes',
+  },
+  {
+    nombre: 'almacenes.destroy',
+    descripcion: 'Puede eliminar almacenes',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {

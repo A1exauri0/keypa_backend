@@ -83,6 +83,7 @@ model Ciudad {
   activo      Boolean   @default(true)
   colonias    Colonia[]
   clientes    Cliente[]
+  sucursales  Sucursal[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -96,6 +97,7 @@ model Colonia {
   idCiudad      Int
   ciudad        Ciudad   @relation(fields: [idCiudad], references: [idCiudad], onDelete: Cascade)
   clientes      Cliente[]
+  sucursales    Sucursal[]
   activo        Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -130,6 +132,45 @@ model Cliente {
   @@index([idCiudad])
   @@index([idColonia])
   @@map("clientes")
+}
+
+model Sucursal {
+  idSucursal      Int       @id @default(autoincrement())
+  nombre          String    @unique @db.VarChar(140)
+  telefono        String    @db.VarChar(20)
+  email           String?   @db.VarChar(180)
+  encargado       String?   @db.VarChar(140)
+  direccion       String    @db.VarChar(255)
+  numeroExterior  String?   @db.VarChar(20)
+  numeroInterior  String?   @db.VarChar(20)
+  referencias     String?   @db.VarChar(255)
+  codigoPostal    String?   @db.VarChar(10)
+  idCiudad        Int?
+  idColonia       Int?
+  ciudad          Ciudad?   @relation(fields: [idCiudad], references: [idCiudad], onDelete: SetNull)
+  colonia         Colonia?  @relation(fields: [idColonia], references: [idColonia], onDelete: SetNull)
+  activo          Boolean   @default(true)
+  almacenes       Almacen[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([idCiudad])
+  @@index([idColonia])
+  @@map("sucursales")
+}
+
+model Almacen {
+  idAlmacen           Int       @id @default(autoincrement())
+  idSucursal          Int
+  nombre              String    @db.VarChar(140)
+  activo              Boolean   @default(true)
+  sucursal            Sucursal  @relation(fields: [idSucursal], references: [idSucursal], onDelete: Cascade)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([idSucursal])
+  @@unique([idSucursal, nombre])
+  @@map("almacenes")
 }
 
 model ProductoCategoria {
