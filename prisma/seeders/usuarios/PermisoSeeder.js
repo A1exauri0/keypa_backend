@@ -77,6 +77,66 @@ const permisosBase = [
     nombre: 'permisos.destroy',
     descripcion: 'Puede eliminar permisos',
   },
+  {
+    nombre: 'marcas.index',
+    descripcion: 'Puede listar marcas',
+  },
+  {
+    nombre: 'marcas.show',
+    descripcion: 'Puede ver detalle de marca',
+  },
+  {
+    nombre: 'marcas.store',
+    descripcion: 'Puede crear marcas',
+  },
+  {
+    nombre: 'marcas.update',
+    descripcion: 'Puede actualizar marcas',
+  },
+  {
+    nombre: 'marcas.destroy',
+    descripcion: 'Puede eliminar marcas',
+  },
+  {
+    nombre: 'categorias.index',
+    descripcion: 'Puede listar categorias',
+  },
+  {
+    nombre: 'categorias.show',
+    descripcion: 'Puede ver detalle de categoria',
+  },
+  {
+    nombre: 'categorias.store',
+    descripcion: 'Puede crear categorias',
+  },
+  {
+    nombre: 'categorias.update',
+    descripcion: 'Puede actualizar categorias',
+  },
+  {
+    nombre: 'categorias.destroy',
+    descripcion: 'Puede eliminar categorias',
+  },
+  {
+    nombre: 'productos.index',
+    descripcion: 'Puede listar productos',
+  },
+  {
+    nombre: 'productos.show',
+    descripcion: 'Puede ver detalle de producto',
+  },
+  {
+    nombre: 'productos.store',
+    descripcion: 'Puede crear productos',
+  },
+  {
+    nombre: 'productos.update',
+    descripcion: 'Puede actualizar productos',
+  },
+  {
+    nombre: 'productos.destroy',
+    descripcion: 'Puede eliminar productos',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {
