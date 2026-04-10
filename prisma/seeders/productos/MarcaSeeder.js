@@ -34,6 +34,14 @@ async function ejecutarMarcaSeeder() {
     });
   }
 
+  await prisma.marca.deleteMany({
+    where: {
+      slug: {
+        notIn: marcasBase.map((marca) => marca.slug),
+      },
+    },
+  });
+
   console.log('MarcaSeeder ejecutado correctamente');
 }
 

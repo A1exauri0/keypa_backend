@@ -70,6 +70,8 @@ const productosBase = [
 ];
 
 async function ejecutarProductoSeeder() {
+  const slugsObjetivo = productosBase.map((producto) => producto.slug);
+
   for (const producto of productosBase) {
     const marca = await prisma.marca.findUnique({
       where: { slug: producto.idMarcaSlug },
@@ -157,6 +159,35 @@ async function ejecutarProductoSeeder() {
         orden: imagen.orden || 0,
         principal: Boolean(imagen.principal),
       })),
+    });
+  }
+
+  const productosFueraDeBase = await prisma.producto.findMany({
+    where: {
+      slug: {
+        notIn: slugsObjetivo,
+      },
+    },
+    select: { idProducto: true },
+  });
+
+  if (productosFueraDeBase.length > 0) {
+    const idsFueraDeBase = productosFueraDeBase.map((item) => item.idProducto);
+
+    await prisma.inventario.deleteMany({
+      where: {
+        idProducto: {
+          in: idsFueraDeBase,
+        },
+      },
+    });
+
+    await prisma.producto.deleteMany({
+      where: {
+        idProducto: {
+          in: idsFueraDeBase,
+        },
+      },
     });
   }
 

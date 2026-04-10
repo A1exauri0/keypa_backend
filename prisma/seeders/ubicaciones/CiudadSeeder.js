@@ -27,6 +27,14 @@ async function ejecutarCiudadSeeder() {
     });
   }
 
+  await prisma.ciudad.deleteMany({
+    where: {
+      nombre: {
+        notIn: ciudadesChiapasBase,
+      },
+    },
+  });
+
   console.log('CiudadSeeder ejecutado correctamente');
 }
 

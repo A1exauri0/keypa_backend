@@ -169,8 +169,12 @@ async function obtenerUbicacion(ciudadNombre, coloniaNombre) {
 }
 
 async function ejecutarClienteSeeder() {
+  const emailsObjetivo = [];
+
   for (const cliente of clientesBase) {
     const ubicacion = await obtenerUbicacion(cliente.ciudad, cliente.colonia);
+
+    emailsObjetivo.push(cliente.email);
 
     await prisma.cliente.upsert({
       where: { email: cliente.email },
@@ -207,6 +211,14 @@ async function ejecutarClienteSeeder() {
       },
     });
   }
+
+  await prisma.cliente.deleteMany({
+    where: {
+      email: {
+        notIn: emailsObjetivo,
+      },
+    },
+  });
 
   console.log('ClienteSeeder ejecutado correctamente');
 }

@@ -40,6 +40,14 @@ async function ejecutarCategoriaSeeder() {
     });
   }
 
+  await prisma.categoria.deleteMany({
+    where: {
+      slug: {
+        notIn: categoriasBase.map((categoria) => categoria.slug),
+      },
+    },
+  });
+
   console.log('CategoriaSeeder ejecutado correctamente');
 }
 

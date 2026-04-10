@@ -8,6 +8,8 @@ const almacenesBase = [
 ];
 
 async function ejecutarAlmacenSeeder() {
+  const objetivos = [];
+
   for (const almacen of almacenesBase) {
     const sucursal = await prisma.sucursal.findUnique({
       where: { nombre: almacen.sucursal },
@@ -17,6 +19,11 @@ async function ejecutarAlmacenSeeder() {
     if (!sucursal) {
       continue;
     }
+
+    objetivos.push({
+      idSucursal: sucursal.idSucursal,
+      nombre: almacen.nombre,
+    });
 
     await prisma.almacen.upsert({
       where: {
@@ -32,6 +39,19 @@ async function ejecutarAlmacenSeeder() {
         idSucursal: sucursal.idSucursal,
         nombre: almacen.nombre,
         activo: true,
+      },
+    });
+  }
+
+  if (objetivos.length > 0) {
+    await prisma.almacen.deleteMany({
+      where: {
+        NOT: {
+          OR: objetivos.map((item) => ({
+            idSucursal: item.idSucursal,
+            nombre: item.nombre,
+          })),
+        },
       },
     });
   }

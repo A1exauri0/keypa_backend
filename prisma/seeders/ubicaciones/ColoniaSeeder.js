@@ -44,6 +44,8 @@ const coloniasPorCiudad = {
 };
 
 async function ejecutarColoniaSeeder() {
+  const objetivos = [];
+
   for (const [nombreCiudad, colonias] of Object.entries(coloniasPorCiudad)) {
     const ciudad = await prisma.ciudad.findUnique({
       where: { nombre: nombreCiudad },
@@ -73,7 +75,27 @@ async function ejecutarColoniaSeeder() {
           activo: true,
         },
       });
+
+      objetivos.push({
+        idCiudad: ciudad.idCiudad,
+        nombre: colonia.nombre,
+        codigoPostal: colonia.codigoPostal,
+      });
     }
+  }
+
+  if (objetivos.length > 0) {
+    await prisma.colonia.deleteMany({
+      where: {
+        NOT: {
+          OR: objetivos.map((item) => ({
+            idCiudad: item.idCiudad,
+            nombre: item.nombre,
+            codigoPostal: item.codigoPostal,
+          })),
+        },
+      },
+    });
   }
 
   console.log('ColoniaSeeder ejecutado correctamente');

@@ -24,6 +24,8 @@ const usuariosBase = [
 ];
 
 async function ejecutarUserSeeder() {
+  const objetivosUsuarioRol = [];
+
   for (const usuario of usuariosBase) {
     const passwordHash = await bcrypt.hash(usuario.password, 12);
 
@@ -64,7 +66,33 @@ async function ejecutarUserSeeder() {
         idRol: rol.idRol,
       },
     });
+
+    objetivosUsuarioRol.push({
+      idUsuario: usuarioGuardado.idUsuario,
+      idRol: rol.idRol,
+    });
   }
+
+  if (objetivosUsuarioRol.length > 0) {
+    await prisma.usuarioRol.deleteMany({
+      where: {
+        NOT: {
+          OR: objetivosUsuarioRol.map((item) => ({
+            idUsuario: item.idUsuario,
+            idRol: item.idRol,
+          })),
+        },
+      },
+    });
+  }
+
+  await prisma.user.deleteMany({
+    where: {
+      email: {
+        notIn: usuariosBase.map((usuario) => usuario.email),
+      },
+    },
+  });
 
   console.log('UserSeeder ejecutado correctamente');
 }

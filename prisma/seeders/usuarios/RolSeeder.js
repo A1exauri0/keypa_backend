@@ -25,6 +25,14 @@ async function ejecutarRolSeeder() {
     });
   }
 
+  await prisma.rol.deleteMany({
+    where: {
+      nombre: {
+        notIn: rolesBase.map((rol) => rol.nombre),
+      },
+    },
+  });
+
   console.log('RolSeeder ejecutado correctamente');
 }
 

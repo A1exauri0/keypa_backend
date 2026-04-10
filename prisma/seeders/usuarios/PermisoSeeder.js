@@ -237,6 +237,26 @@ const permisosBase = [
     nombre: 'almacenes.destroy',
     descripcion: 'Puede eliminar almacenes',
   },
+  {
+    nombre: 'inventarios.index',
+    descripcion: 'Puede listar inventarios',
+  },
+  {
+    nombre: 'inventarios.show',
+    descripcion: 'Puede ver detalle de inventario',
+  },
+  {
+    nombre: 'inventarios.store',
+    descripcion: 'Puede crear inventarios',
+  },
+  {
+    nombre: 'inventarios.update',
+    descripcion: 'Puede actualizar inventarios',
+  },
+  {
+    nombre: 'inventarios.destroy',
+    descripcion: 'Puede eliminar inventarios',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {
@@ -252,6 +272,14 @@ async function ejecutarPermisoSeeder() {
       },
     });
   }
+
+  await prisma.permiso.deleteMany({
+    where: {
+      nombre: {
+        notIn: permisosBase.map((permiso) => permiso.nombre),
+      },
+    },
+  });
 
   console.log('PermisoSeeder ejecutado correctamente');
 }

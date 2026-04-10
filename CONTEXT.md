@@ -86,13 +86,37 @@ keypa_outlet/
   - RolPermisoSeeder
   - UserSeeder
 - prisma/seeders/productos/
+  - MarcaSeeder
+  - CategoriaSeeder
   - ProductoSeeder
+- prisma/seeders/ubicaciones/
+  - CiudadSeeder
+  - ColoniaSeeder
+- prisma/seeders/sucursales/
+  - SucursalSeeder
+- prisma/seeders/almacenes/
+  - AlmacenSeeder
+- prisma/seeders/clientes/
+  - ClienteSeeder
+- prisma/seeders/inventarios/
+  - InventarioSeeder
+
+Politica de sincronizacion:
+1. Todos los seeders deben trabajar en modo sincronizacion exacta.
+2. Cada seeder hace upsert de su base y despues elimina registros fuera del conjunto objetivo.
+3. Las tablas pivote tambien se sincronizan de forma exacta para evitar residuos.
+4. Esta politica es intencionalmente destructiva para mantener ambientes deterministas.
 
 Flujo:
 1. Se crean roles.
 2. Se crean permisos.
 3. Se vinculan roles y permisos.
 4. Se crean usuarios base.
+5. Se crean catalogos de productos (marcas, categorias, productos).
+6. Se crean ubicaciones (ciudades, colonias).
+7. Se crean sucursales y almacenes.
+8. Se crean clientes base.
+9. Se crea inventario inicial.
 
 ## Operacion local con Docker
 

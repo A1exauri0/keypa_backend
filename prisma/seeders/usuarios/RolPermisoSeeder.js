@@ -61,6 +61,11 @@ const permisosPorRol = {
     'almacenes.store',
     'almacenes.update',
     'almacenes.destroy',
+    'inventarios.index',
+    'inventarios.show',
+    'inventarios.store',
+    'inventarios.update',
+    'inventarios.destroy',
   ],
   vendedor: [
     'panel.ver',
@@ -80,10 +85,14 @@ const permisosPorRol = {
     'sucursales.show',
     'almacenes.index',
     'almacenes.show',
+    'inventarios.index',
+    'inventarios.show',
   ],
 };
 
 async function ejecutarRolPermisoSeeder() {
+  const objetivos = [];
+
   for (const [nombreRol, permisos] of Object.entries(permisosPorRol)) {
     const rol = await prisma.rol.findUnique({
       where: { nombre: nombreRol },
@@ -104,6 +113,11 @@ async function ejecutarRolPermisoSeeder() {
         continue;
       }
 
+      objetivos.push({
+        idRol: rol.idRol,
+        idPermiso: permiso.idPermiso,
+      });
+
       await prisma.rolPermiso.upsert({
         where: {
           idRol_idPermiso: {
@@ -118,6 +132,19 @@ async function ejecutarRolPermisoSeeder() {
         },
       });
     }
+  }
+
+  if (objetivos.length > 0) {
+    await prisma.rolPermiso.deleteMany({
+      where: {
+        NOT: {
+          OR: objetivos.map((item) => ({
+            idRol: item.idRol,
+            idPermiso: item.idPermiso,
+          })),
+        },
+      },
+    });
   }
 
   console.log('RolPermisoSeeder ejecutado correctamente');

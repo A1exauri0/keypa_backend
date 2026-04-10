@@ -41,8 +41,12 @@ async function obtenerUbicacion(ciudadNombre, coloniaNombre) {
 }
 
 async function ejecutarSucursalSeeder() {
+  const nombresObjetivo = [];
+
   for (const sucursal of sucursalesBase) {
     const ubicacion = await obtenerUbicacion(sucursal.ciudad, sucursal.colonia);
+
+    nombresObjetivo.push(sucursal.nombre);
 
     await prisma.sucursal.upsert({
       where: { nombre: sucursal.nombre },
@@ -75,6 +79,14 @@ async function ejecutarSucursalSeeder() {
       },
     });
   }
+
+  await prisma.sucursal.deleteMany({
+    where: {
+      nombre: {
+        notIn: nombresObjetivo,
+      },
+    },
+  });
 
   console.log('SucursalSeeder ejecutado correctamente');
 }
