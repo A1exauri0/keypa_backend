@@ -9,9 +9,10 @@ const {
   validarFiltrosProductos,
   validarEliminarProductosMultiples,
 } = require('../validators/productoValidator');
-const { uploadProductoImage } = require('../middlewares/uploadProductoImage');
+const { crearImageUpload } = require('../../../shared/middlewares/uploadImage');
 
 const router = express.Router();
+const uploadProductoImage = crearImageUpload({ folder: 'productos', prefix: 'producto', maxSizeMb: 5 });
 
 router.use('/productos', requireAuth);
 

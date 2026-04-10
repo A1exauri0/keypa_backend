@@ -106,3 +106,15 @@ Desde keypa_outlet:
 ## Idioma del codigo
 
 - Comentarios, mensajes funcionales y documentacion en espanol.
+
+## Reglas de documentacion
+
+- Cada controlador debe incluir comentarios cortos sobre cada funcion de ruta indicando metodo HTTP, ruta y responsabilidad.
+- Cada funcion nueva en services, models, controllers y utilidades debe incluir comentario corto sobre su responsabilidad.
+- Todo cambio nuevo debe quedar comentado en el codigo cuando la intencion no sea obvia a primera vista.
+
+## Reglas para archivos e imagenes
+
+- Toda logica de manejo de archivos (normalizar URL, resolver ruta local y eliminar fisico) debe reutilizar utilidades compartidas en `src/shared/utils`.
+- Evitar duplicar logica de borrado de archivos dentro de cada service de modulo.
+- Todo middleware de subida de archivos debe declararse en `src/shared/middlewares` para reutilizacion global.
