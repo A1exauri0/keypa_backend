@@ -46,6 +46,11 @@ const permisosPorRol = {
     'colonias.store',
     'colonias.update',
     'colonias.destroy',
+    'clientes.index',
+    'clientes.show',
+    'clientes.store',
+    'clientes.update',
+    'clientes.destroy',
   ],
   vendedor: [
     'panel.ver',
@@ -59,6 +64,8 @@ const permisosPorRol = {
     'ciudades.show',
     'colonias.index',
     'colonias.show',
+    'clientes.index',
+    'clientes.show',
   ],
 };
 

@@ -8,6 +8,7 @@ const categoriasRoutes = require("../modules/productos/router/categorias.routes"
 const productosRoutes = require("../modules/productos/router/productos.routes");
 const ciudadesRoutes = require('../modules/ubicaciones/router/ciudades.routes');
 const coloniasRoutes = require('../modules/ubicaciones/router/colonias.routes');
+const clientesRoutes = require('../modules/clientes/router/clientes.routes');
 
 const router = express.Router();
 
@@ -32,5 +33,6 @@ router.use(categoriasRoutes);
 router.use(productosRoutes);
 router.use(ciudadesRoutes);
 router.use(coloniasRoutes);
+router.use(clientesRoutes);
 
 module.exports = router;

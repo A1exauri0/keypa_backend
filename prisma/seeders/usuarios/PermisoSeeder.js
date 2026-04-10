@@ -177,6 +177,26 @@ const permisosBase = [
     nombre: 'colonias.destroy',
     descripcion: 'Puede eliminar colonias',
   },
+  {
+    nombre: 'clientes.index',
+    descripcion: 'Puede listar clientes',
+  },
+  {
+    nombre: 'clientes.show',
+    descripcion: 'Puede ver detalle de cliente',
+  },
+  {
+    nombre: 'clientes.store',
+    descripcion: 'Puede crear clientes',
+  },
+  {
+    nombre: 'clientes.update',
+    descripcion: 'Puede actualizar clientes',
+  },
+  {
+    nombre: 'clientes.destroy',
+    descripcion: 'Puede eliminar clientes',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {

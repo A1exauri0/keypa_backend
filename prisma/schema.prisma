@@ -82,6 +82,7 @@ model Ciudad {
   estado      String    @default("Chiapas") @db.VarChar(80)
   activo      Boolean   @default(true)
   colonias    Colonia[]
+  clientes    Cliente[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -94,6 +95,7 @@ model Colonia {
   codigoPostal  String   @db.VarChar(10)
   idCiudad      Int
   ciudad        Ciudad   @relation(fields: [idCiudad], references: [idCiudad], onDelete: Cascade)
+  clientes      Cliente[]
   activo        Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -101,6 +103,33 @@ model Colonia {
   @@index([idCiudad])
   @@unique([idCiudad, nombre, codigoPostal])
   @@map("colonias")
+}
+
+model Cliente {
+  idCliente        Int       @id @default(autoincrement())
+  nombre           String    @db.VarChar(120)
+  apellidos        String    @db.VarChar(180)
+  email            String?   @unique @db.VarChar(180)
+  telefono         String    @db.VarChar(20)
+  fechaNacimiento  DateTime?
+  genero           Genero?
+  direccion        String?   @db.VarChar(255)
+  numeroExterior   String?   @db.VarChar(20)
+  numeroInterior   String?   @db.VarChar(20)
+  referencias      String?   @db.VarChar(255)
+  codigoPostal     String?   @db.VarChar(10)
+  idCiudad         Int?
+  idColonia        Int?
+  ciudad           Ciudad?   @relation(fields: [idCiudad], references: [idCiudad], onDelete: SetNull)
+  colonia          Colonia?  @relation(fields: [idColonia], references: [idColonia], onDelete: SetNull)
+  activo           Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([telefono])
+  @@index([idCiudad])
+  @@index([idColonia])
+  @@map("clientes")
 }
 
 model ProductoCategoria {
@@ -201,4 +230,9 @@ enum Disponibilidad {
   Disponible    @map("PUBLICADO")
   Pausado       @map("BORRADOR")
   Descontinuado @map("DESCONTINUADO")
+}
+
+enum Genero {
+  Masculino @map("MASCULINO")
+  Femenino  @map("FEMENINO")
 }
