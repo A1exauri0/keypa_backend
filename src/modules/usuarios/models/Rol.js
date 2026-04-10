@@ -1,5 +1,4 @@
 const prisma = require('../../../shared/db/prisma');
-const { buscarPermisosPorNombre } = require('./Permiso');
 
 async function listarRoles() {
   return prisma.rol.findMany({
@@ -23,17 +22,15 @@ async function obtenerRolPorId(idRol) {
   });
 }
 
-async function crearRol({ nombre, descripcion = null, permisos = [] }) {
-  const permisosDb = await buscarPermisosPorNombre(permisos);
-
+async function crearRolConPermisosIds({ nombre, descripcion = null, idPermisos = [] }) {
   return prisma.rol.create({
     data: {
       nombre,
       descripcion,
       permisos: {
-        create: permisosDb.map((permiso) => ({
+        create: idPermisos.map((idPermiso) => ({
           permiso: {
-            connect: { idPermiso: permiso.idPermiso },
+            connect: { idPermiso },
           },
         })),
       },
@@ -84,24 +81,16 @@ async function eliminarRol(idRol) {
   return true;
 }
 
-async function asignarPermisosARol({ idRol, permisos }) {
-  const permisosDb = await buscarPermisosPorNombre(permisos);
-
-  if (permisosDb.length === 0) {
-    throw new Error('No se encontraron permisos validos para asignar al rol');
-  }
-
+async function actualizarPermisosRol({ idRol, idPermisos = [] }) {
   await prisma.rolPermiso.deleteMany({ where: { idRol } });
 
   await prisma.rolPermiso.createMany({
-    data: permisosDb.map((permiso) => ({
+    data: idPermisos.map((idPermiso) => ({
       idRol,
-      idPermiso: permiso.idPermiso,
+      idPermiso,
     })),
     skipDuplicates: true,
   });
-
-  return obtenerRolPorId(idRol);
 }
 
 async function buscarRolesPorNombre(nombres) {
@@ -119,9 +108,9 @@ async function buscarRolesPorNombre(nombres) {
 module.exports = {
   listarRoles,
   obtenerRolPorId,
-  crearRol,
+  crearRolConPermisosIds,
   actualizarRol,
   eliminarRol,
-  asignarPermisosARol,
+  actualizarPermisosRol,
   buscarRolesPorNombre,
 };

@@ -1,35 +1,4 @@
-const bcrypt = require('bcryptjs');
 const prisma = require('../../../shared/db/prisma');
-const { buscarRolesPorNombre } = require('./Rol');
-const { buscarPermisosPorNombre } = require('./Permiso');
-
-function mapearUsuarioAuth(user) {
-  const roles = (user.roles || []).map((item) => item.rol?.nombre).filter(Boolean);
-
-  const permisosSet = new Set();
-  (user.roles || []).forEach((item) => {
-    (item.rol?.permisos || []).forEach((rp) => {
-      if (rp.permiso?.nombre) {
-        permisosSet.add(rp.permiso.nombre);
-      }
-    });
-  });
-
-  (user.permisosDirectos || []).forEach((up) => {
-    if (up.permiso?.nombre) {
-      permisosSet.add(up.permiso.nombre);
-    }
-  });
-
-  return {
-    id: user.idUsuario,
-    nombre: user.nombre,
-    email: user.email,
-    activo: user.activo,
-    roles,
-    permisos: Array.from(permisosSet),
-  };
-}
 
 async function buscarPorEmail(email) {
   return prisma.user.findUnique({
@@ -83,19 +52,7 @@ async function contarUsuarios() {
   return prisma.user.count();
 }
 
-async function crearUsuario({ nombre, email, password, roles = ['editor'], permisosAdicionales = [] }) {
-  const passwordHash = await bcrypt.hash(password, 12);
-  const rolesDb = await buscarRolesPorNombre(roles);
-  const permisosDb = await buscarPermisosPorNombre(permisosAdicionales);
-
-  if (rolesDb.length === 0) {
-    throw new Error('No se encontraron roles validos para el usuario');
-  }
-
-  if (permisosAdicionales.length > 0 && permisosDb.length === 0) {
-    throw new Error('No se encontraron permisos adicionales validos para el usuario');
-  }
-
+async function crearUsuarioConHash({ nombre, email, passwordHash, idRoles = [], idPermisos = [] }) {
   return prisma.user.create({
     data: {
       nombre,
@@ -103,16 +60,16 @@ async function crearUsuario({ nombre, email, password, roles = ['editor'], permi
       passwordHash,
       activo: true,
       roles: {
-        create: rolesDb.map((rol) => ({
+        create: idRoles.map((idRol) => ({
           rol: {
-            connect: { idRol: rol.idRol },
+            connect: { idRol },
           },
         })),
       },
       permisosDirectos: {
-        create: permisosDb.map((permiso) => ({
+        create: idPermisos.map((idPermiso) => ({
           permiso: {
-            connect: { idPermiso: permiso.idPermiso },
+            connect: { idPermiso },
           },
         })),
       },
@@ -221,38 +178,22 @@ async function eliminarUsuario(idUsuario) {
   return true;
 }
 
-async function asignarRolesAUsuario({ userId, roles }) {
-  const rolesDb = await buscarRolesPorNombre(roles);
-
-  if (rolesDb.length === 0) {
-    throw new Error('No se encontraron roles validos para asignar');
-  }
-
-  await prisma.usuarioRol.deleteMany({ where: { idUsuario: userId } });
+async function actualizarRolesUsuario({ idUsuario, idRoles = [] }) {
+  await prisma.usuarioRol.deleteMany({ where: { idUsuario } });
 
   await prisma.usuarioRol.createMany({
-    data: rolesDb.map((rol) => ({ idUsuario: userId, idRol: rol.idRol })),
+    data: idRoles.map((idRol) => ({ idUsuario, idRol })),
     skipDuplicates: true,
   });
-
-  return buscarPorId(userId);
 }
 
-async function asignarPermisosAUsuario({ idUsuario, permisos }) {
-  const permisosDb = await buscarPermisosPorNombre(permisos);
-
-  if (permisosDb.length === 0) {
-    throw new Error('No se encontraron permisos validos para asignar');
-  }
-
+async function actualizarPermisosUsuario({ idUsuario, idPermisos = [] }) {
   await prisma.usuarioPermiso.deleteMany({ where: { idUsuario } });
 
   await prisma.usuarioPermiso.createMany({
-    data: permisosDb.map((permiso) => ({ idUsuario, idPermiso: permiso.idPermiso })),
+    data: idPermisos.map((idPermiso) => ({ idUsuario, idPermiso })),
     skipDuplicates: true,
   });
-
-  return buscarPorId(idUsuario);
 }
 
 async function existeUsuarioConEmail(email) {
@@ -264,17 +205,74 @@ async function existeUsuarioConEmail(email) {
   return Boolean(usuario);
 }
 
+/**
+ * Guarda token hash y expiracion para recuperacion de contrasena.
+ */
+async function guardarTokenRecuperacion({ idUsuario, tokenHash, expiresAt }) {
+  return prisma.user.update({
+    where: { idUsuario },
+    data: {
+      resetPasswordTokenHash: tokenHash,
+      resetPasswordExpiresAt: expiresAt,
+    },
+    select: {
+      idUsuario: true,
+      email: true,
+    },
+  });
+}
+
+/**
+ * Busca un usuario con token de recuperacion vigente.
+ */
+async function buscarPorTokenRecuperacion({ email, tokenHash }) {
+  return prisma.user.findFirst({
+    where: {
+      email,
+      activo: true,
+      resetPasswordTokenHash: tokenHash,
+      resetPasswordExpiresAt: {
+        gt: new Date(),
+      },
+    },
+    select: {
+      idUsuario: true,
+      email: true,
+    },
+  });
+}
+
+/**
+ * Actualiza contrasena y limpia token de recuperacion utilizado.
+ */
+async function actualizarPasswordConRecuperacion({ idUsuario, passwordHash }) {
+  return prisma.user.update({
+    where: { idUsuario },
+    data: {
+      passwordHash,
+      resetPasswordTokenHash: null,
+      resetPasswordExpiresAt: null,
+    },
+    select: {
+      idUsuario: true,
+      email: true,
+    },
+  });
+}
+
 module.exports = {
   buscarPorEmail,
   buscarPorId,
   contarUsuarios,
-  crearUsuario,
+  crearUsuarioConHash,
   listarUsuarios,
   obtenerUsuarioPorId,
   actualizarUsuario,
   eliminarUsuario,
-  asignarRolesAUsuario,
-  asignarPermisosAUsuario,
+  actualizarRolesUsuario,
+  actualizarPermisosUsuario,
   existeUsuarioConEmail,
-  mapearUsuarioAuth,
+  guardarTokenRecuperacion,
+  buscarPorTokenRecuperacion,
+  actualizarPasswordConRecuperacion,
 };

@@ -21,16 +21,16 @@ async function crearPermiso({ nombre, descripcion = null }) {
   });
 }
 
-async function actualizarPermiso({ idPermiso, nombre, descripcion }) {
-  const permisoExistente = await prisma.permiso.findUnique({
+async function existePermisoPorId(idPermiso) {
+  const permiso = await prisma.permiso.findUnique({
     where: { idPermiso },
     select: { idPermiso: true },
   });
 
-  if (!permisoExistente) {
-    return null;
-  }
+  return Boolean(permiso);
+}
 
+async function actualizarPermiso({ idPermiso, nombre, descripcion }) {
   return prisma.permiso.update({
     where: { idPermiso },
     data: {
@@ -41,17 +41,7 @@ async function actualizarPermiso({ idPermiso, nombre, descripcion }) {
 }
 
 async function eliminarPermiso(idPermiso) {
-  const permisoExistente = await prisma.permiso.findUnique({
-    where: { idPermiso },
-    select: { idPermiso: true },
-  });
-
-  if (!permisoExistente) {
-    return null;
-  }
-
   await prisma.permiso.delete({ where: { idPermiso } });
-  return true;
 }
 
 async function buscarPermisosPorNombre(nombres) {
@@ -70,6 +60,7 @@ module.exports = {
   listarPermisos,
   obtenerPermisoPorId,
   crearPermiso,
+  existePermisoPorId,
   actualizarPermiso,
   eliminarPermiso,
   buscarPermisosPorNombre,
