@@ -5,6 +5,8 @@ const validarRequest = require("../../../shared/middlewares/validarRequest");
 const {
   validarLogin,
   validarRegistroInicial,
+  validarForgotPassword,
+  validarResetPassword,
 } = require("../validators/authValidator");
 
 const router = express.Router();
@@ -13,7 +15,7 @@ const router = express.Router();
 // Sirve para obtener los datos del usuario autenticado.
 router.get("/auth/me", requireAuth, UsuarioController.me);
 
-// Sirve para validar sesion activa y cargar informacion inicial del panel.
+// Sirve para validar sesión activa y cargar informacion inicial del panel.
 router.get(
   "/inicio",
   requireAuth,
@@ -27,7 +29,7 @@ router.get(
 );
 
 // ==================== POST ====================
-// Sirve para iniciar sesion y generar token JWT.
+// Sirve para iniciar sesión y generar token JWT.
 router.post(
   "/auth/login",
   validarLogin,
@@ -43,7 +45,23 @@ router.post(
   UsuarioController.registerInicial,
 );
 
-// Sirve para cerrar sesion del usuario autenticado.
+// Sirve para solicitar enlace de recuperacion de contrasena por correo.
+router.post(
+  '/auth/forgot-password',
+  validarForgotPassword,
+  validarRequest,
+  UsuarioController.forgotPassword,
+);
+
+// Sirve para restablecer la contrasena con token valido.
+router.post(
+  '/auth/reset-password',
+  validarResetPassword,
+  validarRequest,
+  UsuarioController.resetPassword,
+);
+
+// Sirve para cerrar sesión del usuario autenticado.
 router.post("/auth/logout", requireAuth, UsuarioController.logout);
 
 // ==================== PUT ====================

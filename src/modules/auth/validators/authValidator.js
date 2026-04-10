@@ -21,7 +21,30 @@ const validarRegistroInicial = [
     .withMessage("La contrasena debe tener al menos 8 caracteres"),
 ];
 
+const validarForgotPassword = [
+  body('email').isEmail().withMessage('Correo invalido').normalizeEmail(),
+];
+
+const validarResetPassword = [
+  body('email').isEmail().withMessage('Correo invalido').normalizeEmail(),
+  body('token')
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Token de recuperacion requerido'),
+  body('password')
+    .isString()
+    .isLength({ min: 8 })
+    .withMessage('La contrasena debe tener al menos 8 caracteres'),
+  body('confirmPassword')
+    .isString()
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('Las contrasenas no coinciden'),
+];
+
 module.exports = {
   validarLogin,
   validarRegistroInicial,
+  validarForgotPassword,
+  validarResetPassword,
 };

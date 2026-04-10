@@ -9,6 +9,13 @@ const usuariosBase = [
     rol: 'admin',
   },
   {
+      nombre: 'Adrian',
+      email: 'adrianalejandrovazquez@gmail.com',
+      password: 'password',
+      rol: 'admin',
+
+  },
+  {
     nombre: 'Vendedor',
     email: 'vendedor@example.com',
     password: 'password',

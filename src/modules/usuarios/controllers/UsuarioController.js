@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const {
   buscarPorEmail,
   contarUsuarios,
@@ -11,8 +12,12 @@ const {
   asignarRolesAUsuario,
   asignarPermisosAUsuario,
   existeUsuarioConEmail,
+  guardarTokenRecuperacion,
+  buscarPorTokenRecuperacion,
+  actualizarPasswordConRecuperacion,
   mapearUsuarioAuth,
-} = require('../models/User');
+} = require('../services/UserService');
+const { enviarCorreoRecuperacion } = require('../../../shared/services/emailService');
 
 function esDepuracionAuth() {
   return process.env.DEBUG_AUTH_RESPONSES === 'true' || process.env.NODE_ENV === 'development';
@@ -29,6 +34,29 @@ function crearToken(user) {
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '1d' },
   );
+}
+
+/**
+ * Genera hash SHA-256 para persistir tokens sin guardar el valor plano.
+ */
+function crearHashToken(tokenPlano) {
+  return crypto.createHash('sha256').update(tokenPlano).digest('hex');
+}
+
+/**
+ * Construye URL publica de restablecimiento con token y correo.
+ */
+function construirEnlaceReset({ email, tokenPlano }) {
+  const fallback = (process.env.FRONTEND_ORIGIN || 'http://localhost:5173')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)[0];
+
+  const baseUrl = process.env.PASSWORD_RESET_URL || `${fallback}/reset-password`;
+  const url = new URL(baseUrl);
+  url.searchParams.set('token', tokenPlano);
+  url.searchParams.set('email', email);
+  return url.toString();
 }
 
 async function login(req, res) {
@@ -82,7 +110,7 @@ async function login(req, res) {
     const token = crearToken(authUser);
 
     return res.json({
-      message: 'Inicio de sesion exitoso',
+      message: 'Inicio de sesión exitoso',
       token,
       user: authUser,
     });
@@ -90,7 +118,7 @@ async function login(req, res) {
     console.error('Error en login:', error);
 
     return res.status(500).json({
-      message: 'Error al intentar iniciar sesion',
+      message: 'Error al intentar iniciar sesión',
       codigo: 'LOGIN_ERROR',
       diagnostico: esDepuracionAuth()
         ? {
@@ -140,6 +168,74 @@ async function me(req, res) {
 
 async function logout(_req, res) {
   return res.json({ message: 'Sesion cerrada correctamente' });
+}
+
+/**
+ * Genera y envia enlace de recuperacion, sin revelar si el correo existe.
+ */
+async function forgotPassword(req, res) {
+  const { email } = req.body;
+  const mensajeGenerico =
+    'Si el correo existe en el sistema, enviaremos un enlace de recuperacion en breve.';
+
+  try {
+    const user = await buscarPorEmail(email);
+
+    if (!user || !user.activo) {
+      return res.json({ message: mensajeGenerico });
+    }
+
+    const tokenPlano = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crearHashToken(tokenPlano);
+    const ttlMinutes = Number(process.env.PASSWORD_RESET_TOKEN_TTL_MINUTES || 60);
+    const expiresAt = new Date(Date.now() + ttlMinutes * 60 * 1000);
+
+    await guardarTokenRecuperacion({
+      idUsuario: user.idUsuario,
+      tokenHash,
+      expiresAt,
+    });
+
+    const link = construirEnlaceReset({ email: user.email, tokenPlano });
+
+    await enviarCorreoRecuperacion({
+      to: user.email,
+      nombre: user.nombre,
+      link,
+    });
+
+    return res.json({ message: mensajeGenerico });
+  } catch (error) {
+    console.error('Error en forgotPassword:', error);
+    return res.status(500).json({ message: 'No fue posible procesar la solicitud de recuperacion' });
+  }
+}
+
+/**
+ * Valida token vigente y actualiza la contrasena del usuario.
+ */
+async function resetPassword(req, res) {
+  const { email, token, password } = req.body;
+
+  try {
+    const tokenHash = crearHashToken(token);
+    const user = await buscarPorTokenRecuperacion({ email, tokenHash });
+
+    if (!user) {
+      return res.status(400).json({ message: 'El enlace de recuperacion es invalido o ya expiro' });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    await actualizarPasswordConRecuperacion({
+      idUsuario: user.idUsuario,
+      passwordHash,
+    });
+
+    return res.json({ message: 'Contrasena actualizada correctamente' });
+  } catch (error) {
+    console.error('Error en resetPassword:', error);
+    return res.status(500).json({ message: 'No fue posible actualizar la contrasena' });
+  }
 }
 
 async function index(_req, res) {
@@ -266,6 +362,8 @@ async function destroy(req, res) {
 module.exports = {
   login,
   registerInicial,
+  forgotPassword,
+  resetPassword,
   me,
   logout,
   index,
