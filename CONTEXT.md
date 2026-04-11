@@ -1,8 +1,8 @@
 # CONTEXT - Keypa Backend
 
-## Vista rapida
+## Objetivo
 
-API REST para autenticacion, usuarios, roles y permisos.
+API REST para autenticacion, autorizacion y operacion de catalogos/ventas para Keypa Outlet.
 
 ## Stack
 
@@ -10,135 +10,139 @@ API REST para autenticacion, usuarios, roles y permisos.
 - Prisma ORM
 - MySQL
 - JWT
+- express-validator
+- multer
 
-## Mapa visual del proyecto
+## Estructura principal
 
 ```text
-keypa_outlet/
-└── keypa_backend/
-    ├── controllers/
-    │   ├── UsuarioController.js
-    │   ├── RolController.js
-    │   └── PermisoController.js
-    ├── models/
-    │   ├── User.js
-    │   ├── Rol.js
-    │   └── Permiso.js
+keypa_backend/
+├── server.js
+├── prisma/
+│   ├── schema.prisma
+│   ├── seed.js
+│   └── seeders/
+└── src/
     ├── routes/
-    │   ├── index.js
-    │   ├── auth.router.js
-    │   ├── usuarios.router.js
-    │   ├── roles.router.js
-    │   └── permisos.router.js
-    ├── validators/
-    │   ├── authValidator.js
-    │   ├── usuarioValidator.js
-    │   ├── rolValidator.js
-    │   └── permisoValidator.js
-    ├── middlewares/
-    ├── prisma/
-    │   ├── schema.prisma
-    │   └── seeders/
-    │       ├── usuarios/
-    │       └── productos/
-    └── server.js
+    │   └── index.js
+    ├── modules/
+    │   ├── auth/
+    │   ├── usuarios/
+    │   ├── productos/
+    │   ├── ubicaciones/
+    │   ├── clientes/
+    │   ├── sucursales/
+    │   ├── almacenes/
+    │   ├── inventarios/
+    │   └── ventas/
+    └── shared/
+        ├── db/
+        ├── middlewares/
+        ├── services/
+        └── utils/
 ```
 
-## Convenciones de rutas
+## Arquitectura por modulo
 
-- Los archivos de rutas usan formato: nombre.router.js
-- El archivo routes/index.js solo compone routers.
-- Cada archivo de ruta se organiza por metodo:
-  - GET
-  - POST
-  - PUT
-  - DELETE
+Cada modulo de dominio mantiene estructura consistente:
 
-## Base de datos y naming
+- `controllers/`
+- `services/`
+- `models/`
+- `validators/`
+- `router/*.routes.js`
 
-- Tablas padre en plural y minusculas:
-  - usuarios
-  - productos
-  - roles
-  - permisos
-- Tablas pivote con verbo y guion bajo:
-  - usuario_tiene_rol
-  - usuario_tiene_permiso
-  - rol_tiene_permiso
-- IDs por entidad:
-  - idUsuario
-  - idProducto
-  - idRol
-  - idPermiso
+La composicion central de rutas se realiza en `src/routes/index.js`.
 
-## Politica de autorizacion
+## Endpoints y dominios
 
-- Se protege por token, rol y permiso por endpoint.
-- Permisos efectivos del usuario:
-  - permisos heredados por rol
-  - mas permisos directos en usuario_tiene_permiso
+Dominios montados actualmente:
 
-## Seeders por dominio
+- auth
+- usuarios, roles, permisos
+- productos, marcas, categorias
+- ciudades, colonias
+- clientes
+- sucursales
+- almacenes
+- inventarios
+- ventas
 
-- prisma/seeders/usuarios/
-  - RolSeeder
-  - PermisoSeeder
-  - RolPermisoSeeder
-  - UserSeeder
-- prisma/seeders/productos/
-  - MarcaSeeder
-  - CategoriaSeeder
-  - ProductoSeeder
-- prisma/seeders/ubicaciones/
-  - CiudadSeeder
-  - ColoniaSeeder
-- prisma/seeders/sucursales/
-  - SucursalSeeder
-- prisma/seeders/almacenes/
-  - AlmacenSeeder
-- prisma/seeders/clientes/
-  - ClienteSeeder
-- prisma/seeders/inventarios/
-  - InventarioSeeder
+Endpoint de salud:
 
-Politica de sincronizacion:
-1. Todos los seeders deben trabajar en modo sincronizacion exacta.
-2. Cada seeder hace upsert de su base y despues elimina registros fuera del conjunto objetivo.
-3. Las tablas pivote tambien se sincronizan de forma exacta para evitar residuos.
-4. Esta politica es intencionalmente destructiva para mantener ambientes deterministas.
+- `GET /health`
 
-Flujo:
-1. Se crean roles.
-2. Se crean permisos.
-3. Se vinculan roles y permisos.
-4. Se crean usuarios base.
-5. Se crean catalogos de productos (marcas, categorias, productos).
-6. Se crean ubicaciones (ciudades, colonias).
-7. Se crean sucursales y almacenes.
-8. Se crean clientes base.
-9. Se crea inventario inicial.
+## Seguridad
 
-## Operacion local con Docker
+- Middleware de autenticacion: `requireAuth`.
+- Middleware de autorizacion por permiso: `requirePermiso`.
+- Middleware de autorizacion por rol: `requireRol`.
+- Token JWT por header `Authorization: Bearer <token>`.
+- Rate limit global en servidor.
+- CORS configurado por `FRONTEND_ORIGIN`.
 
-Desde keypa_outlet:
-- npm run upd
-- npm run migrate
-- npm run seed
-- npm run migrate-seed
-- npm run fresh
+## Base de datos y convenciones
 
-## Idioma del codigo
+- Prisma schema en `prisma/schema.prisma`.
+- IDs semanticos por entidad (idUsuario, idProducto, idVenta, etc.).
+- Relaciones y tablas pivote definidas para usuarios, roles y permisos.
+- Respuestas orientadas a frontend admin con estados activos/inactivos cuando aplique.
 
-- Comentarios, mensajes funcionales y documentacion en espanol.
+## Seeders
 
-## Reglas de documentacion
+Seeders organizados por dominio dentro de `prisma/seeders`:
 
-- Cada controlador debe incluir comentarios cortos sobre cada funcion de ruta indicando metodo HTTP, ruta y responsabilidad.
-- Cada funcion nueva en services, models, controllers y utilidades debe incluir comentario corto sobre su responsabilidad.
-- Todo cambio nuevo debe quedar comentado en el codigo cuando la intencion no sea obvia a primera vista.
+- usuarios
+- productos
+- ubicaciones
+- sucursales
+- almacenes
+- clientes
+- inventarios
 
-## Reglas para archivos e imagenes
+Politica de datos para ambientes de desarrollo:
 
-- Toda logica de manejo de archivos (normalizar URL, resolver ruta local y eliminar fisico) debe reutilizar utilidades compartidas en `src/shared/utils`.
-- Evitar duplicar logica de borrado de archivos dentro de cada service de modulo.
-- Todo middleware de subida de archivos debe declararse en `src/shared/middlewares` para reutilizacion global.
+- sincronizacion exacta cuando el seeder lo requiera
+- eliminacion de residuos para estado determinista
+
+## Archivos y media
+
+- Archivos publicos servidos en `/storage` desde `storage/app/public`.
+- Utilidades compartidas en `src/shared/utils/storageFiles.js`.
+- Subida de imagenes y manejo de archivos via middlewares compartidos.
+
+## Variables de entorno clave
+
+- `PORT`
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `FRONTEND_ORIGIN`
+- `DB_CONNECT_RETRIES`
+- `DB_CONNECT_RETRY_DELAY_MS`
+
+## Comandos locales
+
+- `npm run dev`
+- `npm start`
+- `npm run prisma:generate`
+- `npm run prisma:migrate -- --name <nombre>`
+- `npm run db:seed`
+- `npm run db:reset`
+
+## Docker
+
+El stack se orquesta desde `keypa_outlet`.
+
+- `npm run upd`
+- `npm run logs`
+- `npm run down`
+- `npm run migrate`
+- `npm run seed`
+- `npm run migrate-seed`
+- `npm run fresh`
+
+## Convenciones de equipo
+
+- Idioma de mensajes funcionales: espanol.
+- Mantener contrato estable con frontend (nombres de campos e IDs).
+- Reutilizar utilidades y middlewares compartidos para evitar duplicacion.
