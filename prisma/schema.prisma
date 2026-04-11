@@ -42,6 +42,7 @@ model Producto {
   marca        Marca              @relation(fields: [idMarca], references: [idMarca], onDelete: Restrict)
   categorias   ProductoCategoria[]
   imagenes     ProductoImagen[]
+  inventarios  Inventario[]
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
 
@@ -165,12 +166,29 @@ model Almacen {
   nombre              String    @db.VarChar(140)
   activo              Boolean   @default(true)
   sucursal            Sucursal  @relation(fields: [idSucursal], references: [idSucursal], onDelete: Cascade)
+  inventarios         Inventario[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
   @@index([idSucursal])
   @@unique([idSucursal, nombre])
   @@map("almacenes")
+}
+
+model Inventario {
+  idInventario  Int       @id @default(autoincrement())
+  idAlmacen     Int
+  idProducto    Int
+  stockActual   Int       @default(0)
+  almacen       Almacen   @relation(fields: [idAlmacen], references: [idAlmacen], onDelete: Cascade)
+  producto      Producto  @relation(fields: [idProducto], references: [idProducto], onDelete: Restrict)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([idAlmacen])
+  @@index([idProducto])
+  @@unique([idAlmacen, idProducto])
+  @@map("almacen_tiene_producto")
 }
 
 model ProductoCategoria {
