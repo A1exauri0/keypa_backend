@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime     @updatedAt
   roles        UsuarioRol[]
   permisosDirectos UsuarioPermiso[]
+  ventas       Venta[]
 
   @@map("usuarios")
 }
@@ -43,6 +44,7 @@ model Producto {
   categorias   ProductoCategoria[]
   imagenes     ProductoImagen[]
   inventarios  Inventario[]
+  ventasDetalle VentaDetalle[]
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
 
@@ -126,6 +128,7 @@ model Cliente {
   ciudad           Ciudad?   @relation(fields: [idCiudad], references: [idCiudad], onDelete: SetNull)
   colonia          Colonia?  @relation(fields: [idColonia], references: [idColonia], onDelete: SetNull)
   activo           Boolean   @default(true)
+  ventas           Venta[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
@@ -167,6 +170,7 @@ model Almacen {
   activo              Boolean   @default(true)
   sucursal            Sucursal  @relation(fields: [idSucursal], references: [idSucursal], onDelete: Cascade)
   inventarios         Inventario[]
+  ventas              Venta[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
@@ -189,6 +193,48 @@ model Inventario {
   @@index([idProducto])
   @@unique([idAlmacen, idProducto])
   @@map("almacen_tiene_producto")
+}
+
+model Venta {
+  idVenta      Int           @id @default(autoincrement())
+  folio        String        @unique @db.VarChar(40)
+  idCliente    Int
+  idUsuario    Int
+  idAlmacen    Int
+  tipoPago     TipoPagoVenta
+  estado       EstadoVenta   @default(pendiente)
+  subtotal     Decimal       @db.Decimal(12, 2)
+  total        Decimal       @db.Decimal(12, 2)
+  montoPagado  Decimal       @default(0) @db.Decimal(12, 2)
+  cambio       Decimal       @default(0) @db.Decimal(12, 2)
+  cliente      Cliente       @relation(fields: [idCliente], references: [idCliente], onDelete: Restrict)
+  usuario      User          @relation(fields: [idUsuario], references: [idUsuario], onDelete: Restrict)
+  almacen      Almacen       @relation(fields: [idAlmacen], references: [idAlmacen], onDelete: Restrict)
+  detalles     VentaDetalle[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([idCliente])
+  @@index([idUsuario])
+  @@index([idAlmacen])
+  @@index([estado])
+  @@map("ventas")
+}
+
+model VentaDetalle {
+  idVentaDetalle Int      @id @default(autoincrement())
+  idVenta        Int
+  idProducto     Int
+  cantidad       Int
+  precioUnitario Decimal  @db.Decimal(10, 2)
+  subtotal       Decimal  @db.Decimal(12, 2)
+  venta          Venta    @relation(fields: [idVenta], references: [idVenta], onDelete: Cascade)
+  producto       Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Restrict)
+  createdAt      DateTime @default(now())
+
+  @@index([idVenta])
+  @@index([idProducto])
+  @@map("venta_tiene_producto")
 }
 
 model ProductoCategoria {
@@ -294,4 +340,15 @@ enum Disponibilidad {
 enum Genero {
   Masculino @map("MASCULINO")
   Femenino  @map("FEMENINO")
+}
+
+enum EstadoVenta {
+  pendiente
+  pagado
+  cancelado
+}
+
+enum TipoPagoVenta {
+  efectivo
+  transferencia
 }

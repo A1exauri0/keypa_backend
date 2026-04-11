@@ -2,7 +2,7 @@ const prisma = require('../../../src/shared/db/prisma');
 
 const almacenesBase = [
   {
-    sucursal: 'Sucursal Tuxtla Centro',
+    sucursal: 'Sucursal Tuxtla Gutierrez',
     nombre: 'Almacen Principal Tuxtla',
   }
 ];

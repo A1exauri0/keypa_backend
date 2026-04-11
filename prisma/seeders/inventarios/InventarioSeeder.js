@@ -13,9 +13,6 @@ async function ejecutarInventarioSeeder() {
     prisma.almacen.findMany({
       where: {
         activo: true,
-        nombre: {
-          contains: 'Tuxtla',
-        },
       },
       select: { idAlmacen: true, nombre: true },
       orderBy: { idAlmacen: 'asc' },

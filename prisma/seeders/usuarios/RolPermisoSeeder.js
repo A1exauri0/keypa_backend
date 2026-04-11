@@ -66,6 +66,10 @@ const permisosPorRol = {
     'inventarios.store',
     'inventarios.update',
     'inventarios.destroy',
+    'ventas.index',
+    'ventas.show',
+    'ventas.store',
+    'ventas.update',
   ],
   vendedor: [
     'panel.ver',
@@ -87,6 +91,10 @@ const permisosPorRol = {
     'almacenes.show',
     'inventarios.index',
     'inventarios.show',
+    'ventas.index',
+    'ventas.show',
+    'ventas.store',
+    'ventas.update',
   ],
 };
 

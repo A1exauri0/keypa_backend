@@ -257,6 +257,22 @@ const permisosBase = [
     nombre: 'inventarios.destroy',
     descripcion: 'Puede eliminar inventarios',
   },
+  {
+    nombre: 'ventas.index',
+    descripcion: 'Puede listar ventas',
+  },
+  {
+    nombre: 'ventas.show',
+    descripcion: 'Puede ver detalle de venta',
+  },
+  {
+    nombre: 'ventas.store',
+    descripcion: 'Puede crear ventas',
+  },
+  {
+    nombre: 'ventas.update',
+    descripcion: 'Puede actualizar estado de venta',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {

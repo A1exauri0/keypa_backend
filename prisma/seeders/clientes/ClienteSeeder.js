@@ -2,6 +2,20 @@ const prisma = require('../../../src/shared/db/prisma');
 
 const clientesBase = [
   {
+    nombre: 'Cliente',
+    apellidos: 'General',
+    email: 'cliente.general@keypa.local',
+    telefono: '9610000000',
+    fechaNacimiento: '1990-01-01',
+    genero: 'Masculino',
+    direccion: 'Sin direccion',
+    numeroExterior: 'S/N',
+    numeroInterior: null,
+    referencias: 'Cliente de venta mostrador',
+    ciudad: 'Tuxtla Gutierrez',
+    colonia: 'Centro',
+  },
+  {
     nombre: 'Jose',
     apellidos: 'Hernandez Ruiz',
     email: 'jose.hernandez@demo.mx',
