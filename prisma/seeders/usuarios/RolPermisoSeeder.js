@@ -70,6 +70,15 @@ const permisosPorRol = {
     'ventas.show',
     'ventas.store',
     'ventas.update',
+    'proveedores.index',
+    'proveedores.show',
+    'proveedores.store',
+    'proveedores.update',
+    'proveedores.destroy',
+    'compras.index',
+    'compras.show',
+    'compras.store',
+    'compras.update',
   ],
   vendedor: [
     'panel.ver',
@@ -95,6 +104,10 @@ const permisosPorRol = {
     'ventas.show',
     'ventas.store',
     'ventas.update',
+    'proveedores.index',
+    'proveedores.show',
+    'compras.index',
+    'compras.show',
   ],
 };
 

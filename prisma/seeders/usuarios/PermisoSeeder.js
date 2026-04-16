@@ -273,6 +273,42 @@ const permisosBase = [
     nombre: 'ventas.update',
     descripcion: 'Puede actualizar estado de venta',
   },
+  {
+    nombre: 'proveedores.index',
+    descripcion: 'Puede listar proveedores',
+  },
+  {
+    nombre: 'proveedores.show',
+    descripcion: 'Puede ver detalle de proveedor',
+  },
+  {
+    nombre: 'proveedores.store',
+    descripcion: 'Puede crear proveedores',
+  },
+  {
+    nombre: 'proveedores.update',
+    descripcion: 'Puede actualizar proveedores',
+  },
+  {
+    nombre: 'proveedores.destroy',
+    descripcion: 'Puede eliminar proveedores',
+  },
+  {
+    nombre: 'compras.index',
+    descripcion: 'Puede listar compras',
+  },
+  {
+    nombre: 'compras.show',
+    descripcion: 'Puede ver detalle de compra',
+  },
+  {
+    nombre: 'compras.store',
+    descripcion: 'Puede crear compras',
+  },
+  {
+    nombre: 'compras.update',
+    descripcion: 'Puede actualizar estado de compra',
+  },
 ];
 
 async function ejecutarPermisoSeeder() {

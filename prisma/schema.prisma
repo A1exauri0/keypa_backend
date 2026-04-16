@@ -20,6 +20,7 @@ model User {
   roles        UsuarioRol[]
   permisosDirectos UsuarioPermiso[]
   ventas       Venta[]
+  compras      Compra[]
 
   @@map("usuarios")
 }
@@ -45,6 +46,7 @@ model Producto {
   imagenes     ProductoImagen[]
   inventarios  Inventario[]
   ventasDetalle VentaDetalle[]
+  comprasDetalle CompraDetalle[]
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
 
@@ -138,6 +140,21 @@ model Cliente {
   @@map("clientes")
 }
 
+model Proveedor {
+  idProveedor     Int       @id @default(autoincrement())
+  nombre          String    @unique @db.VarChar(160)
+  contactoNombre  String?   @db.VarChar(140)
+  telefono        String?   @db.VarChar(20)
+  email           String?   @db.VarChar(180)
+  direccion       String?   @db.VarChar(255)
+  activo          Boolean   @default(true)
+  compras         Compra[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("proveedores")
+}
+
 model Sucursal {
   idSucursal      Int       @id @default(autoincrement())
   nombre          String    @unique @db.VarChar(140)
@@ -171,6 +188,7 @@ model Almacen {
   sucursal            Sucursal  @relation(fields: [idSucursal], references: [idSucursal], onDelete: Cascade)
   inventarios         Inventario[]
   ventas              Venta[]
+  compras             Compra[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
@@ -235,6 +253,46 @@ model VentaDetalle {
   @@index([idVenta])
   @@index([idProducto])
   @@map("venta_tiene_producto")
+}
+
+model Compra {
+  idCompra      Int            @id @default(autoincrement())
+  folio         String         @unique @db.VarChar(40)
+  idProveedor   Int
+  idUsuario     Int
+  idAlmacen     Int
+  estado        EstadoCompra   @default(completada)
+  observaciones String?        @db.VarChar(255)
+  subtotal      Decimal        @db.Decimal(12, 2)
+  total         Decimal        @db.Decimal(12, 2)
+  proveedor     Proveedor      @relation(fields: [idProveedor], references: [idProveedor], onDelete: Restrict)
+  usuario       User           @relation(fields: [idUsuario], references: [idUsuario], onDelete: Restrict)
+  almacen       Almacen        @relation(fields: [idAlmacen], references: [idAlmacen], onDelete: Restrict)
+  detalles      CompraDetalle[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([idProveedor])
+  @@index([idUsuario])
+  @@index([idAlmacen])
+  @@index([estado])
+  @@map("compras")
+}
+
+model CompraDetalle {
+  idCompraDetalle Int      @id @default(autoincrement())
+  idCompra        Int
+  idProducto      Int
+  cantidad        Int
+  costoUnitario   Decimal  @db.Decimal(10, 2)
+  subtotal        Decimal  @db.Decimal(12, 2)
+  compra          Compra   @relation(fields: [idCompra], references: [idCompra], onDelete: Cascade)
+  producto        Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Restrict)
+  createdAt       DateTime @default(now())
+
+  @@index([idCompra])
+  @@index([idProducto])
+  @@map("compra_tiene_producto")
 }
 
 model ProductoCategoria {
@@ -351,4 +409,9 @@ enum EstadoVenta {
 enum TipoPagoVenta {
   efectivo
   transferencia
+}
+
+enum EstadoCompra {
+  completada
+  cancelada
 }

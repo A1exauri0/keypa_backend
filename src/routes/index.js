@@ -13,6 +13,8 @@ const sucursalesRoutes = require('../modules/sucursales/router/sucursales.routes
 const almacenesRoutes = require('../modules/almacenes/router/almacenes.routes');
 const inventariosRoutes = require('../modules/inventarios/router/inventarios.routes');
 const ventasRoutes = require('../modules/ventas/router/ventas.routes');
+const proveedoresRoutes = require('../modules/proveedores/router/proveedores.routes');
+const comprasRoutes = require('../modules/compras/router/compras.routes');
 
 const router = express.Router();
 
@@ -42,5 +44,7 @@ router.use(sucursalesRoutes);
 router.use(almacenesRoutes);
 router.use(inventariosRoutes);
 router.use(ventasRoutes);
+router.use(proveedoresRoutes);
+router.use(comprasRoutes);
 
 module.exports = router;
