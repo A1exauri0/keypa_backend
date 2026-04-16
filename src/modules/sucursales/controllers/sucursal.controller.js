@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/SucursalService');
+} = require('../services/sucursal.service');
 
 async function index(_req, res) {
   const sucursales = await indexService();

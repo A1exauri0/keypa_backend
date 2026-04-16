@@ -1,7 +1,7 @@
 const express = require('express');
 const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
 const validarRequest = require('../../../shared/middlewares/validarRequest');
-const MarcaController = require('../controllers/MarcaController');
+const MarcaController = require('../controllers/marca.controller');
 const {
   validarIdMarca,
   validarCrearMarca,

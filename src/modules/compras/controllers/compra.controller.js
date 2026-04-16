@@ -3,7 +3,7 @@ const {
   show: showService,
   store: storeService,
   actualizarEstado: actualizarEstadoService,
-} = require('../services/CompraService');
+} = require('../services/compra.service');
 
 // GET /compras - lista compras con relaciones.
 async function index(_req, res) {

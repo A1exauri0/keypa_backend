@@ -4,7 +4,7 @@ const {
   crearPermiso,
   actualizarPermiso,
   eliminarPermiso,
-} = require('../services/PermisoService');
+} = require('../services/permiso.service');
 
 async function index(_req, res) {
   const permisos = await listarPermisos();

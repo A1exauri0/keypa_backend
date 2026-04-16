@@ -7,7 +7,7 @@ const {
   actualizarPermisosRol,
   buscarRolesPorNombre,
 } = require('../models/Rol');
-const { buscarPermisosPorNombre } = require('./PermisoService');
+const { buscarPermisosPorNombre } = require('./permiso.service');
 
 /**
  * Crea rol con permisos por nombre resolviendo IDs en capa de servicio.

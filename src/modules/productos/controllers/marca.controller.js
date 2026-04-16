@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/MarcaService');
+} = require('../services/marca.service');
 
 // GET /marcas - Lista todas las marcas ordenadas por nombre.
 async function index(_req, res) {

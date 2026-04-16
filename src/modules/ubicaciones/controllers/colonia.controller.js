@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/ColoniaService');
+} = require('../services/colonia.service');
 
 // GET /colonias - Lista colonias, con filtro opcional por ciudad.
 async function index(req, res) {

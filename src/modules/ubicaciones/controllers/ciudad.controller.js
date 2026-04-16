@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/CiudadService');
+} = require('../services/ciudad.service');
 
 // GET /ciudades - Lista todas las ciudades registradas.
 async function index(_req, res) {

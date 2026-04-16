@@ -16,7 +16,7 @@ const {
   buscarPorTokenRecuperacion,
   actualizarPasswordConRecuperacion,
   mapearUsuarioAuth,
-} = require('../services/UserService');
+} = require('../services/usuario.service');
 const { enviarCorreoRecuperacion } = require('../../../shared/services/emailService');
 
 function esDepuracionAuth() {

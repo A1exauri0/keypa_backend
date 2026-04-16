@@ -1,7 +1,7 @@
 const express = require('express');
 const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
 const validarRequest = require('../../../shared/middlewares/validarRequest');
-const AlmacenController = require('../controllers/AlmacenController');
+const AlmacenController = require('../controllers/almacen.controller');
 const {
   validarIdAlmacen,
   validarCrearAlmacen,

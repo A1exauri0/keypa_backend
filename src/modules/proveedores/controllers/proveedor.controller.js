@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/ProveedorService');
+} = require('../services/proveedor.service');
 
 // GET /proveedores - Lista todos los proveedores.
 async function index(_req, res) {

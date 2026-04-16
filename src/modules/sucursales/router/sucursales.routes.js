@@ -1,7 +1,7 @@
 const express = require('express');
 const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
 const validarRequest = require('../../../shared/middlewares/validarRequest');
-const SucursalController = require('../controllers/SucursalController');
+const SucursalController = require('../controllers/sucursal.controller');
 const {
   validarIdSucursal,
   validarCrearSucursal,

@@ -1,7 +1,7 @@
 const express = require('express');
 const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
 const validarRequest = require('../../../shared/middlewares/validarRequest');
-const ColoniaController = require('../controllers/ColoniaController');
+const ColoniaController = require('../controllers/colonia.controller');
 const {
   validarIdColonia,
   validarFiltroColonias,

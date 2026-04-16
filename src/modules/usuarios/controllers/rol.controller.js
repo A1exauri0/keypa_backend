@@ -5,7 +5,7 @@ const {
   actualizarRol,
   eliminarRol,
   asignarPermisosARol,
-} = require('../services/RolService');
+} = require('../services/rol.service');
 
 async function index(_req, res) {
   const roles = await listarRoles();

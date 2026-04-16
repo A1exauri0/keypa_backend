@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
-const { buscarRolesPorNombre } = require('./RolService');
-const { buscarPermisosPorNombre } = require('./PermisoService');
+const { buscarRolesPorNombre } = require('./rol.service');
+const { buscarPermisosPorNombre } = require('./permiso.service');
 const {
   buscarPorEmail,
   buscarPorId,

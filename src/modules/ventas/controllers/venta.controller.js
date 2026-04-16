@@ -4,7 +4,7 @@ const {
   catalogoInventario: catalogoInventarioService,
   store: storeService,
   actualizarEstado: actualizarEstadoService,
-} = require('../services/VentaService');
+} = require('../services/venta.service');
 
 // GET /ventas - lista ventas con relaciones.
 async function index(_req, res) {

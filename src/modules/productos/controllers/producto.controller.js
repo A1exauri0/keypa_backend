@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/ProductoService');
+} = require('../services/producto.service');
 
 function normalizarTipo(valor) {
   const mapa = {

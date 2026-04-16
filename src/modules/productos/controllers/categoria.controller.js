@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/CategoriaService');
+} = require('../services/categoria.service');
 
 // GET /categorias - Lista todas las categorias ordenadas por nombre.
 async function index(_req, res) {

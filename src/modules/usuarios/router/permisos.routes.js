@@ -1,5 +1,5 @@
 const express = require("express");
-const PermisoController = require("../controllers/PermisoController");
+const PermisoController = require("../controllers/permiso.controller");
 const { requireAuth, requirePermiso, requireRol } = require("../../../shared/middlewares/auth");
 const validarRequest = require("../../../shared/middlewares/validarRequest");
 const {

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { buscarPorId, mapearUsuarioAuth } = require('../../modules/usuarios/services/UserService');
+const { buscarPorId, mapearUsuarioAuth } = require('../../modules/usuarios/services/usuario.service');
 
 function esDepuracionAuth() {
   return process.env.DEBUG_AUTH_RESPONSES === 'true' || process.env.NODE_ENV === 'development';

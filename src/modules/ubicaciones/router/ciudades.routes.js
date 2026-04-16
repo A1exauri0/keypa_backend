@@ -1,7 +1,7 @@
 const express = require('express');
 const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
 const validarRequest = require('../../../shared/middlewares/validarRequest');
-const CiudadController = require('../controllers/CiudadController');
+const CiudadController = require('../controllers/ciudad.controller');
 const {
   validarIdCiudad,
   validarCrearCiudad,

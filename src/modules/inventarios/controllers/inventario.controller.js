@@ -5,7 +5,7 @@ const {
   update: updateService,
   destroy: destroyService,
   destroyMany: destroyManyService,
-} = require('../services/InventarioService');
+} = require('../services/inventario.service');
 
 async function index(_req, res) {
   const inventarios = await indexService();

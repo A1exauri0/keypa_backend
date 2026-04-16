@@ -1,7 +1,7 @@
 const express = require('express');
 const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
 const validarRequest = require('../../../shared/middlewares/validarRequest');
-const ProductoController = require('../controllers/ProductoController');
+const ProductoController = require('../controllers/producto.controller');
 const {
   validarIdProducto,
   validarCrearProducto,
