@@ -1,6 +1,6 @@
 const express = require('express');
-const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth');
-const validarRequest = require('../../../shared/middlewares/validarRequest');
+const { requireAuth, requirePermiso, requireRol } = require('../../../shared/middlewares/auth.middleware');
+const validarRequest = require('../../../shared/middlewares/validar-request.middleware');
 const ProductoController = require('../controllers/producto.controller');
 const {
   validarIdProducto,
@@ -9,7 +9,7 @@ const {
   validarFiltrosProductos,
   validarEliminarProductosMultiples,
 } = require('../validators/productoValidator');
-const { crearImageUpload } = require('../../../shared/middlewares/uploadImage');
+const { crearImageUpload } = require('../../../shared/middlewares/upload-image.middleware');
 
 const router = express.Router();
 const uploadProductoImage = crearImageUpload({ folder: 'productos', prefix: 'producto', maxSizeMb: 5 });

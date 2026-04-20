@@ -6,7 +6,7 @@ const {
   actualizarPermiso,
   eliminarPermiso,
   buscarPermisosPorNombre,
-} = require('../models/Permiso');
+} = require('../models/permiso.model');
 
 /**
  * Actualiza permiso solo si existe y mantiene contrato de retorno null si no existe.

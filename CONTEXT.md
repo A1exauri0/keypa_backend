@@ -52,6 +52,13 @@ Cada modulo de dominio mantiene estructura consistente:
 - `validators/`
 - `router/*.routes.js`
 
+Ejemplo de convencion de archivos en usuarios:
+
+- `src/modules/usuarios/models/usuario.model.js`
+- `src/modules/usuarios/services/usuario.service.js`
+- `src/modules/usuarios/controllers/usuario.controller.js`
+- `src/modules/usuarios/router/usuarios.routes.js`
+
 La composicion central de rutas se realiza en `src/routes/index.js`.
 
 ## Endpoints y dominios
@@ -77,6 +84,7 @@ Endpoint de salud:
 - Middleware de autenticacion: `requireAuth`.
 - Middleware de autorizacion por permiso: `requirePermiso`.
 - Middleware de autorizacion por rol: `requireRol`.
+- Implementacion compartida de middlewares: `src/shared/middlewares/auth.middleware.js` y `src/shared/middlewares/validar-request.middleware.js`.
 - Token JWT por header `Authorization: Bearer <token>`.
 - Rate limit global en servidor.
 - CORS configurado por `FRONTEND_ORIGIN`.

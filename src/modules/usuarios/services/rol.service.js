@@ -6,7 +6,7 @@ const {
   eliminarRol,
   actualizarPermisosRol,
   buscarRolesPorNombre,
-} = require('../models/Rol');
+} = require('../models/rol.model');
 const { buscarPermisosPorNombre } = require('./permiso.service');
 
 /**

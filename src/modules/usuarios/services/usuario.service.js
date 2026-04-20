@@ -16,7 +16,7 @@ const {
   guardarTokenRecuperacion,
   buscarPorTokenRecuperacion,
   actualizarPasswordConRecuperacion,
-} = require('../models/User');
+} = require('../models/usuario.model');
 
 /**
  * Convierte la entidad usuario con relaciones a formato auth consumible por API.
